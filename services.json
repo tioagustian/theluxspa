@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "id": 1,
+      "text": "The Lux Refleksi"
+    },
+    {
+      "id": 2,
+      "text": "Luxury Aromatherapy Refleksi"
+    },
+    {
+      "id": 3,
+      "text": "Head Massage"
+    },
+    {
+      "id": 4,
+      "text": "Face Massage"
+    },
+    {
+      "id": 5,
+      "text": "Lux Body Massage"
+    },
+    {
+      "id": 6,
+      "text": "Body Scrubs"
+    },
+    {
+      "id": 7,
+      "text": "Back Therapy"
+    },
+    {
+      "id": 8,
+      "text": "Spa Massage"
+    },
+    {
+      "id": 9,
+      "text": "Ear Candling"
+    },
+    {
+      "id": 10,
+      "text": "Cupping"
+    },
+    {
+      "id": 11,
+      "text": "Coin Massage"
+    }
+  ]
+}

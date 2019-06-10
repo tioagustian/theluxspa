@@ -1,0 +1,160 @@
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../font/Work_Sans/WorkSans-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Killer Boots';
+    src: url('../font/killer-boots/KILLERBOOTS.TTF');
+}
+
+
+body {
+	font-family: 'Work Sans'
+}
+
+.loader {
+	display: none;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	position: absolute;
+	z-index: 99;
+	background-color: white;
+}
+
+.loading {
+	background-color: #016afa;
+	height: 25px;
+	width: 25px;
+	border-radius: 50%;
+}
+
+.background {
+	position: relative;
+	height: 100%;
+}
+
+.background::before {
+	display: inline-block;
+	position: absolute;
+	z-index: -1;
+	content: '';
+	width: 50%;
+	height: 100%;
+	background-color: #016afa;
+}
+
+.background::after {
+	position: absolute;
+	display: inline-block;
+	z-index: -1;
+	content: '';
+	width: 50%;
+	height: 100%;
+	background-color: #005ddc;
+	right: 0;
+	top: 0;
+}
+
+.container {
+	height: 100%;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 20px;
+	padding-bottom: 30px;
+}
+
+.logo {
+	width: 100%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logo img {
+	width: 200px;
+	height: auto;
+}
+
+.register {
+	height: 100%;
+}
+
+.register .step-1 {
+	background-color: white;
+	padding-left: 5%;
+	padding-right: 5%;
+	padding-top: 8%;
+	padding-bottom: 2%;
+	border-radius: 10px;
+	font-size: 12pt;
+	position: relative;
+	overflow: hidden;
+	transition: all 1s ease-in-out;
+}
+
+form {
+	transition: all 1s ease-in-out;
+}
+
+.register .step-2 {
+	display: none;
+	background-color: white;
+	padding-left: 10%;
+	padding-right: 10%;
+	padding-top: 10%;
+	padding-bottom: 5%;
+	border-radius: 10px;
+	font-size: 12pt
+}
+
+.right {
+	float: right;
+}
+
+label {
+	display: flex;
+	align-items: center;
+}
+
+.title {
+	font-family: 'Killer Boots';
+	padding-bottom: 5px;
+	display: flex;
+	justify-content: center;
+	text-shadow: -0.5px -0.5px 0 #fff,  
+    0.5px -0.5px 0 #fff,
+    -0.5px 0.5px 0 #fff,
+     0.5px 0.5px 0 #fff,
+     0px 3px 2px rgba(0,0,0,0.5);
+     letter-spacing: 2px;
+     font-size: 20pt;
+}
+
+.light {
+	color: #cdcbcc;
+}
+
+.heavy {
+	color: #c0b8b6;
+}
+
+.progress-l {
+	position: absolute;
+	z-index: 99;
+	background-color: rgba(255,255,255,0.8);
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+	display: none;
+	opacity: 0;
+	justify-content: center;
+	align-items: center;
+}
