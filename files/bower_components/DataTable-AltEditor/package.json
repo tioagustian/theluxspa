@@ -1,0 +1,29 @@
+{
+  "author": {
+    "name": "kingkode",
+    "url": "http://kingkode.com/free-datatables-editor-alternative"
+  },
+  "contributors": [{
+    "name": "KasperOlesen"
+  } , { 
+    "name": "luca-vercelli"
+  } , {
+    "name": "zack-hable"
+  } , {
+    "name": "zadarkside"
+  }],
+  "description": "DataTables Editor Free",
+  "keywords": [
+    "DataTables",
+    "Editor",
+    "Free"
+  ],
+  "license": "MIT",
+  "main": "src/dataTables.altEditor.free.js",
+  "name": "datatables.net-editor-free",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZaDarkSide/DataTable-AltEditor.git"
+  },
+  "version": "1.6.7"
+}
