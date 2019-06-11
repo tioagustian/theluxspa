@@ -37,12 +37,20 @@
         {
             $this->crud->set_table('services')
                 ->set_subject('Layanan')
-                ->columns('name', 'description', 'created_at')
-                ->add_fields('name', 'description')
-                ->edit_fields('name', 'description')
+                ->columns('name', 'description', 'duration', 'created_at')
+                ->add_fields('name', 'description', 'duration')
+                ->edit_fields('name', 'description', 'duration')
+                ->callback_column('duration', function ($value)
+                {
+                    return $value . ' minutes';
+                })
                 ->callback_column('created_at', function ($value)
                 {
                     return $this->dateFormat($value);
+                })
+                ->callback_read_field('duration', function ($value)
+                {
+                    return $value . ' minutes';
                 })
                 ->callback_read_field('created_at', function ($value)
                 {

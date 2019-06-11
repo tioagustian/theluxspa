@@ -348,6 +348,8 @@
 				}
 			});
 
+			//Service form logic
+
 			$('#input_service').select2({
 				placeholder: "Pilih Layanan",
 				ajax: {
@@ -357,8 +359,15 @@
 			})
 
 			$('#input_service').on('select2:open', function (e) {
-				$('#input_terapis').attr('disabled')
-				$('#input_terapis').val(null).trigger('change');
+				$('#input_terapis').val(null).trigger('change')
+				disableForm([
+					'#input_terapis',
+					'#input_tanggal',
+					'#input_jam',
+					'.jamInput',
+					'#input_kamar',
+					'.kamarInput'
+				])
 			})
 
 			$('#input_service').on('select2:select', function (e) {
@@ -367,8 +376,27 @@
 				getTherapis(data.id)
 			})
 
+			// End service form logic
+
+			// Therapis form logic
+
 			$('#input_terapis').select2({
 				placeholder: "Pilih Therapis"
+			})
+
+			$('#input_terapis').on('select2:open', function (e) {
+				disableForm([
+					'#input_tanggal',
+					'#input_jam',
+					'.jamInput',
+					'#input_kamar',
+					'.kamarInput'
+				])
+			})
+
+			$('#input_terapis').on('select2:select', function (e) {
+				data = e.params.data
+				$('#input_tanggal').removeAttr('disabled')
 			})
 
 			function getTherapis(service_id) {
@@ -386,10 +414,7 @@
 				})
 			}
 
-			$('#input_terapis').on('select2:select', function (e) {
-				data = e.params.data
-				$('#input_tanggal').removeAttr('disabled')
-			})
+			//End therapis form logic
 
 			$('#input_tanggal').datepicker({
 				uiLibrary: 'bootstrap',
@@ -425,6 +450,17 @@
 					$('#input_kamar').val(value)
 				}
 			})
+
+			function disableForm(targets) {
+				targets.forEach(function (el) {
+					if ($(el).length == 1){
+						$(el).attr('disabled', true)
+					} else {
+						$(el).removeClass('selected')
+						$(el).addClass('disabled')
+					}
+				})
+			}
 		});
 		</script>
 	</body>
