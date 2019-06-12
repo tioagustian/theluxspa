@@ -27,8 +27,9 @@
 
         public function index()
         {
-            $data['header']['title'] = 'Pesanan';
-            $data['header']['description'] = 'Data Pesanan';
+            $data['so_list']['title'] = 'Pesanan Terapi';
+            $data['so_list']['description'] = 'Data Pesanan Terapi';
+            $data['url']['getDataPesanan'] = base_url('admin/pesanan/getDataPesanan');
             $this->template->setCss([
                 base_url('files/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css'),
                 base_url('files/assets/pages/data-table/css/buttons.dataTables.min.css'),
@@ -48,7 +49,68 @@
 
         public function getDataPesanan()
         {
-            
+
+            header('Content-Type: application/json');
+
+            $dt['draw'] = (isset($_GET['draw'])) ? $_GET['draw'] : false;
+            $dt['recordsTotal'] = 0;
+            $dt['recordsFiltered'] = 0;
+            $data = [];
+            $i = 1;
+            $query = "SELECT
+                      invoices.name AS invoice_name,
+                      invoices.phone AS invoice_phone,
+                      service_order_detail.name,
+                      service_order_detail.code,
+                      workers.name AS worker,
+                      services.name AS service,
+                      rooms.name AS room,
+                      service_order_detail.date,
+                      service_order_detail.time,
+                      service_order_detail.duration,
+                      service_order_detail.status,
+                      service_order_detail.total,
+                      invoices.status AS invoice_status,
+                      invoices.voucher_number,
+                      service_orders.created_at
+                    FROM service_orders
+                      INNER JOIN invoices
+                        ON service_orders.invoice_id = invoices.id
+                      INNER JOIN service_order_detail
+                        ON service_order_detail.invoice_id = invoices.id
+                      INNER JOIN workers
+                        ON service_order_detail.worker_id = workers.id
+                      INNER JOIN services
+                        ON service_order_detail.service_id = services.id
+                      INNER JOIN rooms
+                        ON service_order_detail.room_id = rooms.id";
+
+            $results = $this->db->query($query)->result();
+
+            foreach ($results as $result) {
+                $data[] = [
+                    'no' => $i,
+                    'order_id' => $result->code,
+                    'name' => $result->name,
+                    'therapis' => $result->worker,
+                    'service' => $result->service,
+                    'room' => $result->room,
+                    'date' => $result->date,
+                    'time' => $result->time,
+                    'duration' => $result->duration . ' minutes',
+                    'status' => $result->status,
+                    'total' => number_format($result->total),
+                    'invoice_name' => $result->invoice_name,
+                    'invoice_phone' => $result->invoice_phone,
+                    'invoice_number' => $result->voucher_number,
+                    'invoice_status' => $result->invoice_status
+                ];
+                $i++;
+            }
+            $dt['recordsTotal'] = count($results);
+            $dt['recordsFiltered'] = count($results);
+            $dt['data'] = $data;
+            echo json_encode($dt, JSON_PRETTY_PRINT);
         }
 
 

@@ -14,7 +14,7 @@
         {
             parent::__construct();
             $this->load->database();
-            $this->load->helper('url');
+            $this->load->helper(['url', 'duration']);
             $this->crud = new grocery_CRUD();
             $this->crud->set_theme('flexigrid');
             $this->crud->unset_clone();
@@ -40,9 +40,10 @@
                 ->columns('name', 'description', 'duration', 'created_at')
                 ->add_fields('name', 'description', 'duration')
                 ->edit_fields('name', 'description', 'duration')
+                ->field_type('duration', 'multiselect', getDurationArray())
                 ->callback_column('duration', function ($value)
                 {
-                    return $value . ' minutes';
+                    return getDurationValue($value) . ' minutes';
                 })
                 ->callback_column('created_at', function ($value)
                 {
@@ -50,7 +51,7 @@
                 })
                 ->callback_read_field('duration', function ($value)
                 {
-                    return $value . ' minutes';
+                    return getDurationValue($value) . ' minutes';
                 })
                 ->callback_read_field('created_at', function ($value)
                 {
@@ -82,7 +83,7 @@
             return $post_array;
         }
 
-        private function updated_at($post_array)
+        private function updated_at($post_array, $primary_key)
         {
             $post_array['updated_at'] = date("Y-m-d H:i:s");
             return $post_array;

@@ -168,6 +168,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label">Durasi</label>
+                            <div class="inputGroupContainer">
+                               <div class="input-group">
+                               		<div class="input-group-prepend">
+	                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-hourglass-half"></i></span>
+	                                </div>
+                                  	<select class="selectpicker form-control" id="input_durasi" name="input_durasi" disabled></select>
+                               </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label">Terapis</label>
                             <div class="inputGroupContainer">
                                <div class="input-group">
@@ -179,6 +190,8 @@
                                </div>
                             </div>
                         </div>
+					</div>
+					<div class="col-md-6">
                         <div class="form-group">
                             <label class="control-label">Tanggal</label>
                             <div class="inputGroupContainer">
@@ -190,39 +203,18 @@
                                </div>
                             </div>
                         </div>
-					</div>
-					<div class="col-md-6">
 						<div class="form-group">
-							<label class="control-label">Jam</label>
-							<div class="inputGroupContainer">
-								<input type="hidden" name="input_jam" id="input_jam">
-								<div class="inputGroupContainer">
-									<div class="row ml-0 mr-0">
-										<div class="col jamInput" data-value="9:00">
-											<span>09:00</span>
-										</div>
-										<div class="col jamInput" data-value="9:30">
-											<span>09:30</span>
-										</div>
-										<div class="col jamInput" data-value="10:00">
-											<span>10:00</span>
-										</div>
-										<div class="col jamInput" data-value="10:30">
-											<span>10:30</span>
-										</div>
-										<div class="col jamInput" data-value="11:00">
-											<span>11:00</span>
-										</div>
-										<div class="col jamInput disabled" data-value="12:30">
-											<span>12:30</span>
-										</div>
-										<div class="col jamInput" data-value="13:30">
-											<span>13:30</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+                            <label class="control-label">Jam</label>
+                            <div class="inputGroupContainer">
+                               <div class="input-group">
+                               		<div class="input-group-prepend">
+	                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-clock"></i></span>
+	                                </div>
+                                  	<select class="selectpicker form-control" id="input_jam" name="input_jam" disabled>
+                                  	</select>
+                               </div>
+                            </div>
+                        </div>
 						<div class="form-group">
 							<label class="control-label">Kamar</label>
 							<div class="inputGroupContainer">
@@ -325,10 +317,6 @@
 			return result
 		}
 
-		function disableDates(today = new Date()) {
-			
-		}
-
 		$(document).ready(function() 
 		{
 			if (window.pageYOffset != 0)
@@ -359,12 +347,13 @@
 			})
 
 			$('#input_service').on('select2:open', function (e) {
+				$('#input_durasi').val(null).trigger('change')
 				$('#input_terapis').val(null).trigger('change')
 				disableForm([
+					'#input_durasi',
 					'#input_terapis',
 					'#input_tanggal',
 					'#input_jam',
-					'.jamInput',
 					'#input_kamar',
 					'.kamarInput'
 				])
@@ -372,11 +361,44 @@
 
 			$('#input_service').on('select2:select', function (e) {
 				data = e.params.data
-				$('#input_terapis').removeAttr('disabled')
+				enableForm([
+					'#input_durasi'
+				])
+				getServiceDuration(data.id)
 				getTherapis(data.id)
 			})
 
 			// End service form logic
+
+			//Duration service form logic
+
+			$('#input_durasi').select2({
+				placeholder: "Pilih Durasi"
+			})
+
+			$('#input_durasi').on('select2:select', function (e) {
+				data = e.params.data
+				enableForm([
+					'#input_terapis'
+				])
+			})
+
+			function getServiceDuration(service_id) {
+				$('#input_durasi').select2({
+					placeholder: "Pilih Durasi",
+					ajax: {
+						url: "<?= base_url('api/getAvailableServices') ?>/" + service_id + "/duration",
+						dataType: "json",
+						processResults: function (data) {
+							return {
+								results: data.results
+							}
+						}
+					}
+				})
+			}
+
+			//End duration service form logic
 
 			// Therapis form logic
 
@@ -388,7 +410,6 @@
 				disableForm([
 					'#input_tanggal',
 					'#input_jam',
-					'.jamInput',
 					'#input_kamar',
 					'.kamarInput'
 				])
@@ -396,7 +417,9 @@
 
 			$('#input_terapis').on('select2:select', function (e) {
 				data = e.params.data
-				$('#input_tanggal').removeAttr('disabled')
+				enableForm([
+					'#input_tanggal'
+				])
 			})
 
 			function getTherapis(service_id) {
@@ -416,12 +439,43 @@
 
 			//End therapis form logic
 
+			//Date form logic
+
 			$('#input_tanggal').datepicker({
 				uiLibrary: 'bootstrap',
 				value: formatDate(),
 				format: 'dd/mm/yyyy',
-				minDate: formatDate()
+				minDate: formatDate(),
+				open: function (e) {
+					disableForm([
+						'#input_jam',
+						'#input_kamar',
+						'.kamarInput'
+					])
+				},
+				close: function (e) {
+					enableForm([
+						'#input_jam'
+					])
+				}
 			})
+
+			//End date form logic
+
+			//Time form logic
+
+			$('#input_jam').select2({
+				placeholder: "Pilih Jam"
+			})
+
+			function getJam() {
+				service = $('#input_service').val()
+				duration = $('#input_durasi').val()
+				therapis = $('#input_terapis')
+				date = $('#input_tanggal')
+			}
+
+			//End time form logic
 
 			$('.jamInput').on('click', function () {
 				var selection = $('.jamInput')
@@ -450,6 +504,17 @@
 					$('#input_kamar').val(value)
 				}
 			})
+
+			function enableForm(targets) {
+				targets.forEach(function (el) {
+					if ($(el).length == 1){
+						$(el).removeAttr('disabled')
+					} else {
+						$(el).removeClass('selected')
+						$(el).removeClass('disabled')
+					}
+				})
+			}
 
 			function disableForm(targets) {
 				targets.forEach(function (el) {
