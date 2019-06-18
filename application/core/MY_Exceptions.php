@@ -12,8 +12,10 @@ class MY_Exceptions extends CI_Exceptions {
     
     function show_404($page = '', $log_error = TRUE)
     {
+        include APPPATH.'config/config.php';
+        die('URL ' . $config['base_url'] . $_SERVER['REQUEST_URI'] . ' not found on this server.');
         if ($this->CI === null) {
-            include APPPATH.'config/config.php';
+            
             die('URL ' . $config['base_url'] . $_SERVER['REQUEST_URI'] . ' not found on this server.');
             return header('Location: '.$config['base_url'].'/'.$config['404_page'].$_SERVER['REQUEST_URI']);
         }

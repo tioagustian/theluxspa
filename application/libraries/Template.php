@@ -119,7 +119,8 @@ class Template
     public function notFound($newData = array(), $onlyBody = false)
     {
         if (!$this->CI->auth->loginStatus()) {
-            return redirect($this->CI->config->item('login_page'));
+            // return redirect($this->CI->config->item('login_page'));
+            die("The requested URL is not found");
         }
         if (!$newData) {
             $newData['page'] = $this->CI->uri->uri_string();

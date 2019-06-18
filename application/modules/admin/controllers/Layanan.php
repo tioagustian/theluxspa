@@ -37,13 +37,17 @@
         {
             $this->crud->set_table('services')
                 ->set_subject('Layanan')
-                ->columns('name', 'description', 'duration', 'created_at')
-                ->add_fields('name', 'description', 'duration')
-                ->edit_fields('name', 'description', 'duration')
+                ->columns('name', 'description', 'duration', 'price', 'created_at')
+                ->add_fields('name', 'description', 'duration', 'price')
+                ->edit_fields('name', 'description', 'duration', 'price')
                 ->field_type('duration', 'multiselect', getDurationArray())
                 ->callback_column('duration', function ($value)
                 {
                     return getDurationValue($value) . ' minutes';
+                })
+                ->callback_column('price', function ($value)
+                {
+                    return 'Rp. ' . number_format($value);
                 })
                 ->callback_column('created_at', function ($value)
                 {
@@ -52,6 +56,10 @@
                 ->callback_read_field('duration', function ($value)
                 {
                     return getDurationValue($value) . ' minutes';
+                })
+                ->callback_read_field('price', function ($value)
+                {
+                    return 'Rp. ' . number_format($value);
                 })
                 ->callback_read_field('created_at', function ($value)
                 {

@@ -93,7 +93,36 @@
 			}
 
 			.selected {
-				background-color: #30FA8F;
+				background-color: #6aaf08;
+			}
+
+			.form-input {
+			    box-shadow: 1px 0px 7px rgba(0,0,0,0.3);
+			    padding-top: 10px;
+			    border-radius: 3px;
+			    padding-bottom: 10px;
+			    background-color: white;
+			}
+
+			.form-container {
+			    padding-left: 10em;
+			    padding-right: 10em;
+			    margin-bottom: 15px;
+			}
+
+			.promo {
+
+			}
+
+			.next-btn {
+				cursor: pointer;
+			}
+
+			@media only screen and (max-width : 720px) {
+				.form-container {
+				    padding-left: 3em;
+			    	padding-right: 3em;
+				}
 			}
 
 			
@@ -133,7 +162,7 @@
 			</div>
 		</header>
 
-		<div class="cs-cover-image d-flex justify-content-center align-items-center parallax-window" data-parallax="scroll" data-image-src="assets/images/cover-home.jpg">
+		<div class="container-fluid promo">
 			<div class="cs-cover-image-overlay d-flex justify-content-center align-items-center w-100 h-100">
 				<div class="container">
 					<div class="row text-white text-center">
@@ -151,9 +180,9 @@
 			</div>
 		</div>
 
-		<div class="container p-5" id="about_us" style="margin-top: -5rem;margin-bottom: 5rem !important;padding-top: 10rem !important;padding-bottom: 7rem !important;">
+		<div class="container-fluid form-container" style="">
 			<form role="form" class="well form-horizontal">
-				<div class="row">
+				<div class="row form-input">
 					<div class="col-md-6">
 						<div class="form-group">
                             <label class="control-label">Layanan</label>
@@ -221,30 +250,33 @@
 								<input type="hidden" name="input_kamar" id="input_kamar">
 								<div class="inputGroupContainer">
 									<div class="row ml-0 mr-0">
-										<div class="col kamarInput" data-value="1">
+										<div class="col kamarInput disabled" id="kamar_1" data-value="1">
 											<span>Kamar 1</span>
 										</div>
-										<div class="col kamarInput" data-value="2">
+										<div class="col kamarInput disabled" id="kamar_2" data-value="2">
 											<span>Kamar 2</span>
 										</div>
-										<div class="col kamarInput" data-value="3">
+										<div class="col kamarInput disabled" id="kamar_3" data-value="3">
 											<span>Kamar 3</span>
 										</div>
-										<div class="col kamarInput disabled" data-value="4">
+										<div class="col kamarInput disabled" id="kamar_4" data-value="4">
 											<span>Kamar 4</span>
 										</div>
-										<div class="col kamarInput" data-value="5">
+										<div class="col kamarInput disabled" id="kamar_5" data-value="5">
 											<span>Kamar 5</span>
 										</div>
-										<div class="col kamarInput" data-value="6">
+										<div class="col kamarInput disabled" id="kamar_6" data-value="6">
 											<span>Kamar 6</span>
 										</div>
-										<div class="col kamarInput" data-value="7">
+										<div class="col kamarInput disabled" id="kamar_7" data-value="7">
 											<span>Kamar 7</span>
 										</div>
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="form-group">
+							<div class="btn btn-primary next-btn float-right" id="nextBtn" data-toggle="modal" data-target="nextForm" >Selanjutnya</div>
 						</div>
 					</div>
 				</div>
@@ -284,11 +316,71 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="nextForm" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+		  	<div class="modal-dialog modal-dialog-centered" role="document">
+		    	<div class="modal-content">
+		      		<div class="modal-header">
+		        	<h5 class="modal-title" id="title">Rincian</h5>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          		<span aria-hidden="true">&times;</span>
+		        	</button>
+			      	</div>
+			      	<div class="modal-body">
+			        	<div class="container">
+			        		<div class="row">
+			        			<div class="col-md-6">
+			        				<div class="form-group">
+			                            <label class="control-label">Name</label>
+			                            <div class="inputGroupContainer">
+			                               <div class="input-group">
+			                               		<div class="input-group-prepend">
+				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-user"></i></span>
+				                                </div>
+			                                  	<input type="text" name="name" class="form-control" id="name" placeholder="Nama Lengkap">
+			                               </div>
+			                            </div>
+			                        </div>
+			                        <div class="form-group">
+			                            <label class="control-label">Nomor Handphone</label>
+			                            <div class="inputGroupContainer">
+			                               <div class="input-group">
+			                               		<div class="input-group-prepend">
+				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
+				                                </div>
+			                                  	<input type="text" name="phone" class="form-control" id="phone" placeholder="Nomor Handphone">
+			                               </div>
+			                            </div>
+			                        </div>
+			                        <div class="form-group">
+			                            <label class="control-label">Email</label>
+			                            <div class="inputGroupContainer">
+			                               <div class="input-group">
+			                               		<div class="input-group-prepend">
+				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
+				                                </div>
+			                                  	<input type="text" name="phone" class="form-control" id="email" placeholder="Email">
+			                               </div>
+			                            </div>
+			                        </div>
+			        			</div>
+			        			<div class="col-md-6">
+			        				
+			        			</div>
+			        		</div>
+			        	</div>
+			      	</div>
+			      	<div class="modal-footer">
+			        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
+			        	<button type="button" class="btn btn-primary">Checkout</button>
+			      	</div>
+		    	</div>
+		  	</div>
+		</div>
 
 		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 		<script src="assets/plugins/jquery/jquery.min.js"></script>
-		<script src="assets/plugins/popper/popper.min.js"></script>
+		<script src="files/bower_components/popper.js/js/popper.min.js"></script>
 		<script src="assets/plugins/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 		<script src="assets/plugins/select2.js/js/select2.min.js"></script>
 		<script src="assets/plugins/gijgo/datepicker/js/gijgo.min.js"></script>
@@ -298,20 +390,19 @@
 		<script>
 
 
-		function formatDate(today = new Date(), format = 'dd/mm/yyyy') {
-			var dd = today.getDate();
-			var mm = today.getMonth() + 1;
-
-			var yyyy = today.getFullYear();
+		function formatDate(today = new Date(), format = 'dd-mmm-yyyy') {
+			var tomorrow = new Date(today)
+			tomorrow.setDate(today.getDate()+1)
+			var dd = tomorrow.getDate()
+			var mmm = today.getMonth() + 1
+			var yyyy = today.getFullYear()
+			var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 			if (dd < 10) {
-			  dd = '0' + dd;
-			} 
-			if (mm < 10) {
-			  mm = '0' + mm;
+			  dd = '0' + dd
 			}
 
 			result = format.replace('dd', dd)
-			result = result.replace('mm', mm)
+			result = result.replace('mmm', month[mmm])
 			result = result.replace('yyyy', yyyy)
 
 			return result
@@ -323,6 +414,10 @@
 			{
 				$(".cs-navbar").addClass("cs-navbar-shadow");
 			}
+
+			$("#nextBtn").on('click', function (e) {
+				$('#nextForm').modal('show')
+			})
 
 			$(window).scroll(function() 
 			{
@@ -355,7 +450,8 @@
 					'#input_tanggal',
 					'#input_jam',
 					'#input_kamar',
-					'.kamarInput'
+					'.kamarInput',
+					'.next-btn'
 				])
 			})
 
@@ -411,7 +507,8 @@
 					'#input_tanggal',
 					'#input_jam',
 					'#input_kamar',
-					'.kamarInput'
+					'.kamarInput',
+					'.next-btn'
 				])
 			})
 
@@ -420,6 +517,21 @@
 				enableForm([
 					'#input_tanggal'
 				])
+				$.ajax({
+					url: "<?= base_url('api/getDisabledDate?therapis_id=') ?>" + data.id,
+					dataType: "json",
+					method: "GET",
+					data: {
+						service_id: $('#input_service').val(),
+						duration: $('#input_durasi').val(),
+						terapis_id: $('#input_terapis').val()
+					},
+					success: function (data) {
+						$date.destroy()
+						getDisabledDate(data)
+					}
+
+				})
 			})
 
 			function getTherapis(service_id) {
@@ -441,24 +553,43 @@
 
 			//Date form logic
 
-			$('#input_tanggal').datepicker({
+			var $date = $('#input_tanggal').datepicker({
 				uiLibrary: 'bootstrap',
+				showOtherMonths: true,
 				value: formatDate(),
 				format: 'dd/mm/yyyy',
-				minDate: formatDate(),
-				open: function (e) {
-					disableForm([
-						'#input_jam',
-						'#input_kamar',
-						'.kamarInput'
-					])
-				},
-				close: function (e) {
-					enableForm([
-						'#input_jam'
-					])
-				}
+				minDate: formatDate()
 			})
+
+			function getDisabledDate(data) {
+				$('#input_tanggal').datepicker({
+					uiLibrary: 'bootstrap',
+					showOtherMonths: true,
+					value: formatDate(),
+					format: 'dd-mmm-yyyy',
+					minDate: formatDate(),
+					disableDates: data,
+					open: function (e) {
+						disableForm([
+							'#input_jam',
+							'#input_kamar',
+							'.kamarInput',
+							'.next-btn'
+						])
+					},
+					close: function (e) {
+						enableForm([
+							'#input_jam'
+						])
+					},
+					select: function (e) {
+						enableForm([
+							'#input_jam'
+						])
+						getAvailableTime()
+					}
+				})
+			}
 
 			//End date form logic
 
@@ -468,14 +599,60 @@
 				placeholder: "Pilih Jam"
 			})
 
-			function getJam() {
+			function getAvailableTime() {
 				service = $('#input_service').val()
 				duration = $('#input_durasi').val()
-				therapis = $('#input_terapis')
-				date = $('#input_tanggal')
+				therapis = $('#input_terapis').val()
+				date = $('#input_tanggal').val()
+				url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date
+				$('#input_jam').select2({
+					placeholder: "Pilih Jam Booking",
+					ajax: {
+						url: url,
+						dataType: "json",
+						processResults: function (data) {
+							return data
+						}
+					}
+				})
 			}
 
+			$('#input_jam').on('select2:open', function (e) {
+				disableForm([
+					'#input_kamar',
+					'.kamarInput',
+					'.next-btn'
+				])
+			})
+
+			$('#input_jam').on('select2:select', function (e) {
+				data = e.params.data
+				$.ajax({
+					url: "<?= base_url('api/getAvailableRooms'); ?>",
+					dataType: 'json',
+					method: 'GET',
+					data: {
+						time: data.id
+					},
+					success: function (result) {
+						showAvailableRooms(result.results)
+					}
+				})
+			})
+
 			//End time form logic
+
+			//Rooms form logic
+
+			function showAvailableRooms(datas) {
+				datas.forEach(function (data) {
+					if ($.find('#kamar_' + data.id)) {
+						$('#kamar_' + data.id).removeClass('selected disabled')
+					}
+				})
+			}
+
+			//End rooms form logic
 
 			$('.jamInput').on('click', function () {
 				var selection = $('.jamInput')
@@ -503,11 +680,14 @@
 					$(this).addClass('selected')
 					$('#input_kamar').val(value)
 				}
+				enableForm([
+					'.next-btn'
+				])
 			})
 
 			function enableForm(targets) {
 				targets.forEach(function (el) {
-					if ($(el).length == 1){
+					if ($(el).length == 1 && el != '.next-btn'){
 						$(el).removeAttr('disabled')
 					} else {
 						$(el).removeClass('selected')
@@ -518,7 +698,7 @@
 
 			function disableForm(targets) {
 				targets.forEach(function (el) {
-					if ($(el).length == 1){
+					if ($(el).length == 1 && el != '.next-btn'){
 						$(el).attr('disabled', true)
 					} else {
 						$(el).removeClass('selected')

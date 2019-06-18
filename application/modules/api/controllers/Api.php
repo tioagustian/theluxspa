@@ -22,7 +22,7 @@ class Api extends MX_Controller
 
     public function index()
     {
-        return ;
+        return;
     }
 
     public function getAvailableServices($id = false, $duration = false)
@@ -110,58 +110,174 @@ class Api extends MX_Controller
         echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    public function getAvailableDate()
+    public function getDisabledDate()
+    {
+        $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
+        $duration = (isset($_GET['duration'])) ? addslashes($_GET['duration']) : false;
+        $id = (isset($_GET['therapis_id'])) ? addslashes($_GET['therapis_id']) : false;
+        $query = $this->db->get_where('worker_offday', ['worker_id' => $id])->result_array();
+        $result = [];
+        foreach ($query as $row) {
+            $result[] = date('d/m/Y', strtotime($row['date']));
+        }
+        echo json_encode($result, JSON_PRETTY_PRINT);
+        return;
+    }
+
+    public function getAvailableTime()
     {
         $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
         $duration = (isset($_GET['duration'])) ? addslashes($_GET['duration']) : false;
         $therapis_id = (isset($_GET['therapis_id'])) ? addslashes($_GET['therapis_id']) : false;
-        $now = date('m/d/Y', strtotime('now'));
-        $room = [1 => 'Kamar 1'];
+        $date = (isset($_GET['date'])) ? addslashes($_GET['date']) : 'now';
+        $now = date('m/d/Y', strtotime($date));
+        $rooms = [];
+        foreach ($this->db->get('rooms')->result_array() as $r_arr) {
+            $rooms[$r_arr['id']] = $r_arr['name'];
+        }
+        // die(json_encode($now, JSON_PRETTY_PRINT));
         $dayStart = strtotime($now . ' 00:00:00');
         $open = strtotime($now . ' 10:00:00');
         $close = strtotime($now . ' 15:00:00');
-        $cooldown = 10 * 60;
+        $cooldown = 20 * 60;
         $minimum = (25 * 60);
         $disableDate = [];
         $available = [];
+        $output = [];
+        $records = [];
         $durationArray = getDurationArray();
         $dump_data = [
             '1' => [
-                '10:00:00' => '90',
-                '11:45:00' => '60',
-                '13:50:00' => '60'
+                '11:30:00' => '60',
+                '12:45:00' => '60',
+                '15:00:00' => '60'
+            ],
+            '2' => [
+                '11:30:00' => '60',
+                '12:45:00' => '60',
+                '15:00:00' => '60'
             ]
         ];
-        foreach ($dump_data as $room => $on) {
-            $i = 0;
-            $state = [];
-            foreach ($on as $times => $duration) {
-                $startTime = strtotime($now . ' ' . $times);
-                $durationTime = $duration * 60;
-                $totalTime = $startTime + $durationTime + $cooldown;
-                if ($i > 0) {
-                    // echo ($startTime - $state[$i -1]) / 60 . ' | ';
-                    $division = ($startTime - $state[$i -1]) / 60;
-                    foreach (getDurationArray() as $dr) {
 
-                        if (($dr + 10 <= ($division))) {
-                            // echo date('d/m/Y H:i:s',$totalTime) . " - " . date('d/m/Y H:i:s',$totalTime + ( getDurationValue($d) + 10 * 60 ) ) . " [".( getDurationValue($d) + 10 ). " | $dr |" ." $division]";
-                            $available[$room][] = [date('d/m/Y H:i:s',$totalTime) => $dr];
-                        }
+        foreach ($dump_data as $room => $times) {
 
+            $timeIndex = 0;
+            
+            foreach ($times as $time => $duration) {
+
+                $startTime = strtotime($now . ' ' . $time);
+                $endTime = $startTime + ($duration * 60);
+                $lastIndex[] = $endTime;
+                $lastTime = '';
+                $i = 0;
+                foreach ($durationArray as $d) {
+                    
+                    if ($timeIndex == 0) {
+                        $value = $startTime - $open;
+                        $at = $open;
+                    } else {
+                        $value = $startTime - $lastIndex[$timeIndex - 1];
+                        $at = $lastIndex[$timeIndex - 1];
                     }
                     
+                    $minimumDuration = ($d * 60) + $cooldown;
+                    if ($value > $minimumDuration) {
+                        $available[$room][] = $d . " minutes start at " . date('H:i:s', $at) .", end at " . date('H:i:s', $at + $minimumDuration) . " room " . $room;
+                        
+                        if ($lastTime != date('H:i:s', $at) && !in_array(date('H:i:s', $at), $records)) {
+                            $output['results'][] = ['id' => date('H:i:s', $at), 'text' => date('H:i', $at)];
+                        }
+                        $lastTime = date('H:i:s', $at);
+                        $records[] = date('H:i:s', $at);
+                        $i++;
+
+                    }
+
                 }
-                $state[$i] = $totalTime;
-                $i++;
-                // echo date('d/m/Y H:i:s', $startTime) . ' - ' . date('d/m/Y H:i:s',$totalTime) . ' | ';
+
+                $timeIndex++;
             }
+
         }
+
         if (count($available) > 0) {
-            echo json_encode($available, JSON_PRETTY_PRINT);
+            echo json_encode($output, JSON_PRETTY_PRINT);
         }
-        // echo strtotime('06/12/2019 10:00:00'). ' | ';
-        // echo date('d/m/Y, H:i:s', strtotime('06/12/2019 10:00:00'));
+    }
+
+    public function getAvailableRooms()
+    {
+        $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
+        $duration = (isset($_GET['duration'])) ? addslashes($_GET['duration']) : false;
+        $therapis_id = (isset($_GET['therapis_id'])) ? addslashes($_GET['therapis_id']) : false;
+        $time_selected = (isset($_GET['time'])) ? addslashes($_GET['time']) : false;
+        $now = date('m/d/Y', strtotime('now'));
+        $rooms = [1 => 'Kamar 1', 2 => 'Kamar 2'];
+        $dayStart = strtotime($now . ' 00:00:00');
+        $open = strtotime($now . ' 10:00:00');
+        $close = strtotime($now . ' 15:00:00');
+        $cooldown = 20 * 60;
+        $minimum = (25 * 60);
+        $disableDate = [];
+        $output = [];
+        $records = [];
+        $durationArray = getDurationArray();
+        $dump_data = [
+            '1' => [
+                '11:30:00' => '60',
+                '12:45:00' => '60',
+                '15:00:00' => '60'
+            ],
+            '2' => [
+                '11:30:00' => '60',
+                '12:45:00' => '60',
+                '15:00:00' => '60'
+            ]
+        ];
+
+        foreach ($dump_data as $room => $times) {
+
+            $timeIndex = 0;
+            
+            foreach ($times as $time => $duration) {
+
+                $startTime = strtotime($now . ' ' . $time);
+                $endTime = $startTime + ($duration * 60);
+                $lastIndex[] = $endTime;
+                $lastTime = '';
+                $i = 0;
+
+                foreach ($durationArray as $d) {
+                    
+                    if ($timeIndex == 0) {
+                        $value = $startTime - $open;
+                        $at = $open;
+                    } else {
+                        $value = $startTime - $lastIndex[$timeIndex - 1];
+                        $at = $lastIndex[$timeIndex - 1];
+                    }
+                    
+                    $minimumDuration = ($d * 60) + $cooldown;
+                    if ($value > $minimumDuration) {
+                        if (date('H:i:s', $at) == $time_selected && !in_array($room, $records)) {
+
+                            $output['results'][] = ['id' => $room, 'text' => $rooms[$room]];
+                            $records[] = $room;
+                        }
+                        $lastTime = date('H:i:s', $at);
+                        
+                        $i++;
+
+                    }
+
+                }
+
+                $timeIndex++;
+            }
+
+        }
+
+        echo json_encode($output, JSON_PRETTY_PRINT);
     }
 
 }
