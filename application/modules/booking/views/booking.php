@@ -89,11 +89,12 @@
 
 			.disabled {
 				background-color: rgb(233,236,239);
-				cursor: not-allowed;
+				cursor: not-allowed !important;
+				pointer-events: none !important;
 			}
 
 			.selected {
-				background-color: #6aaf08;
+				background-color: lightgreen;
 			}
 
 			.form-input {
@@ -116,6 +117,29 @@
 
 			.next-btn {
 				cursor: pointer;
+			}
+
+			label {
+				font-size: 10pt;
+				color: grey;
+			}
+
+			.o-list {
+				border-bottom: 1px solid darkgrey;
+				margin-bottom: 8px;
+			}
+
+			.o-list-item {
+			    padding-left: 4px;
+			}
+
+			.o-total {
+				margin-top: 8px;
+			}
+
+			.o-value {
+				font-weight: 500;
+    			font-size: x-large;
 			}
 
 			@media only screen and (max-width : 720px) {
@@ -181,7 +205,7 @@
 		</div>
 
 		<div class="container-fluid form-container" style="">
-			<form role="form" class="well form-horizontal">
+			<form role="form" class="well form-horizontal" id="order_form">
 				<div class="row form-input">
 					<div class="col-md-6">
 						<div class="form-group">
@@ -250,33 +274,17 @@
 								<input type="hidden" name="input_kamar" id="input_kamar">
 								<div class="inputGroupContainer">
 									<div class="row ml-0 mr-0">
-										<div class="col kamarInput disabled" id="kamar_1" data-value="1">
-											<span>Kamar 1</span>
+										<?php foreach ($rooms as $room) { ?>
+										<div class="col kamarInput disabled" id="kamar_<?= $room['id'] ?>" data-value="<?= $room['id'] ?>">
+											<span><?= $room['name'] ?></span>
 										</div>
-										<div class="col kamarInput disabled" id="kamar_2" data-value="2">
-											<span>Kamar 2</span>
-										</div>
-										<div class="col kamarInput disabled" id="kamar_3" data-value="3">
-											<span>Kamar 3</span>
-										</div>
-										<div class="col kamarInput disabled" id="kamar_4" data-value="4">
-											<span>Kamar 4</span>
-										</div>
-										<div class="col kamarInput disabled" id="kamar_5" data-value="5">
-											<span>Kamar 5</span>
-										</div>
-										<div class="col kamarInput disabled" id="kamar_6" data-value="6">
-											<span>Kamar 6</span>
-										</div>
-										<div class="col kamarInput disabled" id="kamar_7" data-value="7">
-											<span>Kamar 7</span>
-										</div>
+									<?php } ?>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="btn btn-primary next-btn float-right" id="nextBtn" data-toggle="modal" data-target="nextForm" >Selanjutnya</div>
+							<div class="btn btn-primary next-btn float-right disabled" id="nextBtn" data-toggle="modal" data-target="nextForm" >Selanjutnya</div>
 						</div>
 					</div>
 				</div>
@@ -317,10 +325,10 @@
 			</div>
 		</div>
 		<div class="modal fade" id="nextForm" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
-		  	<div class="modal-dialog modal-dialog-centered" role="document">
+		  	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 		    	<div class="modal-content">
 		      		<div class="modal-header">
-		        	<h5 class="modal-title" id="title">Rincian</h5>
+		        	<h5 class="modal-title" id="title">Konfirmasi</h5>
 		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          		<span aria-hidden="true">&times;</span>
 		        	</button>
@@ -329,6 +337,7 @@
 			        	<div class="container">
 			        		<div class="row">
 			        			<div class="col-md-6">
+			        				<h5>Rincian</h5>
 			        				<div class="form-group">
 			                            <label class="control-label">Name</label>
 			                            <div class="inputGroupContainer">
@@ -356,22 +365,56 @@
 			                            <div class="inputGroupContainer">
 			                               <div class="input-group">
 			                               		<div class="input-group-prepend">
-				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
+				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-at"></i></span>
 				                                </div>
-			                                  	<input type="text" name="phone" class="form-control" id="email" placeholder="Email">
+			                                  	<input type="email" name="phone" class="form-control" id="email" placeholder="Email">
 			                               </div>
 			                            </div>
 			                        </div>
 			        			</div>
 			        			<div class="col-md-6">
-			        				
+			        				<h5>Rincian Pesanan</h5>
+			        				<div class="row">
+			        					<div class="col-6">
+			        						<div class="o-list">
+					        					<label class="control-label">Layanan</label>
+					        					<div class="o-list-item" id="o_service">A</div>
+					        				</div>
+					        				<div class="o-list">
+					        					<label class="control-label">Terapis</label>
+					        					<div class="o-list-item" id="o_terapis">B</div>
+					        				</div>
+					        				<div class="o-list">
+					        					<label class="control-label">Tanggal</label>
+					        					<div class="o-list-item" id="o_tanggal">A</div>
+					        				</div>
+			        					</div>
+			        					<div class="col-6">
+			        						<div class="o-list">
+					        					<label class="control-label">Jam</label>
+					        					<div class="o-list-item" id="o_jam">B</div>
+					        				</div>
+					        				<div class="o-list">
+					        					<label class="control-label">Durasi</label>
+					        					<div class="o-list-item" id="o_durasi">A</div>
+					        				</div>
+					        				<div class="o-list">
+					        					<label class="control-label">Kamar</label>
+					        					<div class="o-list-item" id="o_kamar">B</div>
+					        				</div>
+			        					</div>
+			        				</div>
+			        				<div class="o-total float-right">
+			        					<label>Total:</label>
+			        					<div class="o-value" id="o_value">Rp. 0</div>
+			        				</div>
 			        			</div>
 			        		</div>
 			        	</div>
 			      	</div>
 			      	<div class="modal-footer">
 			        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
-			        	<button type="button" class="btn btn-primary">Checkout</button>
+			        	<button type="button" class="btn btn-primary" onclick="checkOut();">Checkout</button>
 			      	</div>
 		    	</div>
 		  	</div>
@@ -394,7 +437,7 @@
 			var tomorrow = new Date(today)
 			tomorrow.setDate(today.getDate()+1)
 			var dd = tomorrow.getDate()
-			var mmm = today.getMonth() + 1
+			var mmm = today.getMonth()
 			var yyyy = today.getFullYear()
 			var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 			if (dd < 10) {
@@ -416,7 +459,7 @@
 			}
 
 			$("#nextBtn").on('click', function (e) {
-				$('#nextForm').modal('show')
+				getTotal($('#order_form').serialize())
 			})
 
 			$(window).scroll(function() 
@@ -627,11 +670,19 @@
 
 			$('#input_jam').on('select2:select', function (e) {
 				data = e.params.data
+				service = $('#input_service').val()
+				duration = $('#input_durasi').val()
+				therapis = $('#input_terapis').val()
+				date = $('#input_tanggal').val()
 				$.ajax({
 					url: "<?= base_url('api/getAvailableRooms'); ?>",
 					dataType: 'json',
 					method: 'GET',
 					data: {
+						service_id: service,
+						duration: duration,
+						therapis_id: therapis,
+						date: date,
 						time: data.id
 					},
 					success: function (result) {
@@ -678,12 +729,35 @@
 				}
 				if (!$(this).hasClass('disabled')) {
 					$(this).addClass('selected')
+					$('#input_kamar').removeAttr('disabled')
 					$('#input_kamar').val(value)
 				}
 				enableForm([
 					'.next-btn'
 				])
 			})
+
+			function getTotal(form) {
+				$.ajax({
+					url: "<?= base_url('api/getTotalValue');?>",
+					method: "GET",
+					data: form,
+					success: function (data) {
+						$('#o_service').text(data.service_name)
+						$('#o_terapis').text(data.therapis_name)
+						$('#o_kamar').text(data.room_name)
+						$('#o_tanggal').text(data.date)
+						$('#o_jam').text(data.time)
+						$('#o_durasi').text(data.duration + ' menit')
+						$('#o_value').text('Rp. ' + data.total_price)
+						$('#nextForm').modal('show')
+					}
+				})
+			}
+
+			function checkOut(argument) {
+				console.log('checkout')
+			}
 
 			function enableForm(targets) {
 				targets.forEach(function (el) {

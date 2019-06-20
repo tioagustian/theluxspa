@@ -20,7 +20,8 @@ class Booking extends MX_Controller
     public function index()
     {
         $data = array();
-
-        return $this->load->view('booking');
+        $rooms = $this->db->get('rooms')->result_array();
+        $data['rooms'] = $rooms;
+        return $this->load->view('booking', $data);
     }
 }
