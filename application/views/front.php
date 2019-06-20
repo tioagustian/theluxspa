@@ -24,7 +24,7 @@
 		<header class="navbar navbar-expand-lg navbar-light cs-navbar bg-light sticky-top">
 			<div class="container">
 				<a class="navbar-brand" href="#">
-					<img src="assets/images/the_lux_spa.jpg" style="width: 150px">
+					<img src="assets/images/the_lux_spa.png" style="width: 150px">
 				</a>
 
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

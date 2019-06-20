@@ -8,13 +8,13 @@
 		<meta name="generator" content="Powered by Aruna Development Project 4">
 
 		<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="assets/plugins/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="<?= base_url('assets/plugins/bootstrap/4.3.1/css/bootstrap.min.css');?>">
 
-		<link rel="stylesheet" href="assets/plugins/select2.js/css/select2.min.css">
+		<link rel="stylesheet" href="<?= base_url('assets/plugins/select2.js/css/select2.min.css');?>">
 
-		<link rel="stylesheet" href="assets/plugins/gijgo/datepicker/css/gijgo.min.css">
+		<link rel="stylesheet" href="<?= base_url('assets/plugins/gijgo/datepicker/css/gijgo.min.css');?>">
 		<!--- Custom CSS --->
-		<link rel="stylesheet" href="assets/css/custom.css">
+		<link rel="stylesheet" href="<?= base_url('assets/css/custom.css');?>">
 
 		<!--- Roboto Font --->
 		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
@@ -157,7 +157,7 @@
 		<header class="navbar navbar-expand-lg navbar-light cs-navbar bg-light sticky-top">
 			<div class="container">
 				<a class="navbar-brand" href="#">
-					<img src="assets/images/the_lux_spa.jpg" style="width: 150px">
+					<img src="<?= base_url('assets/images/the_lux_spa.png');?>" style="width: 150px">
 				</a>
 
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -422,13 +422,13 @@
 
 		<!-- Optional JavaScript -->
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="assets/plugins/jquery/jquery.min.js"></script>
-		<script src="files/bower_components/popper.js/js/popper.min.js"></script>
-		<script src="assets/plugins/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-		<script src="assets/plugins/select2.js/js/select2.min.js"></script>
-		<script src="assets/plugins/gijgo/datepicker/js/gijgo.min.js"></script>
-		<script src="assets/plugins/fontawesome/5.7.2/js/all.min.js"></script>
-		<script src="assets/plugins/parallax/parallax.min.js"></script>
+		<script src="<?= base_url('assets/plugins/jquery/jquery.min.js'); ?>"></script>
+		<script src="<?= base_url('files/bower_components/popper.js/js/popper.min.js'); ?>"></script>
+		<script src="<?= base_url('assets/plugins/bootstrap/4.3.1/js/bootstrap.min.js'); ?>"></script>
+		<script src="<?= base_url('assets/plugins/select2.js/js/select2.min.js'); ?>"></script>
+		<script src="<?= base_url('assets/plugins/gijgo/datepicker/js/gijgo.min.js'); ?>"></script>
+		<script src="<?= base_url('assets/plugins/fontawesome/5.7.2/js/all.min.js'); ?>"></script>
+		<script src="<?= base_url('assets/plugins/parallax/parallax.min.js'); ?>"></script>
 
 		<script>
 

@@ -77,7 +77,7 @@
                       INNER JOIN invoices
                         ON service_orders.invoice_id = invoices.id
                       INNER JOIN service_order_detail
-                        ON service_order_detail.invoice_id = invoices.id
+                        ON service_order_detail.order_id = service_orders.id
                       INNER JOIN workers
                         ON service_order_detail.worker_id = workers.id
                       INNER JOIN services

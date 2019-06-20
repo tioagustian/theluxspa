@@ -23,6 +23,7 @@ class Api extends MX_Controller
         parent::__construct();
         $this->load->database();
         $this->load->helper(['url', 'duration']);
+        $this->load->model('Order');
     }
 
     public function index()
@@ -209,13 +210,18 @@ class Api extends MX_Controller
         echo json_encode($output , JSON_PRETTY_PRINT);
     }
 
-    public function getAvailableRooms()
+    public function getAvailableRooms($int = false, $service_id = '', $duration = '', $therapis_id = '', $date = '', $time_selected = '', $room_id = '')
     {
-        $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
-        $duration = (isset($_GET['duration'])) ? addslashes(getDurationValue($_GET['duration'])) : false;
-        $therapis_id = (isset($_GET['therapis_id'])) ? addslashes($_GET['therapis_id']) : false;
-        $date = (isset($_GET['date'])) ? addslashes($_GET['date']) : 'now';
-        $time_selected = (isset($_GET['time'])) ? addslashes($_GET['time']) : false;
+        if (!$int) {
+            $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
+            $duration = (isset($_GET['duration'])) ? addslashes(getDurationValue($_GET['duration'])) : false;
+            $therapis_id = (isset($_GET['therapis_id'])) ? addslashes($_GET['therapis_id']) : false;
+            $date = (isset($_GET['date'])) ? addslashes($_GET['date']) : 'now';
+            $time_selected = (isset($_GET['time'])) ? addslashes($_GET['time']) : false;
+        } else {
+            $duration = addslashes(getDurationValue($duration));
+        }
+        
         $now = date('Y/m/d', strtotime($date));
         $rooms = [];
         foreach ($this->db->get('rooms')->result_array() as $r_arr) {
@@ -281,6 +287,9 @@ class Api extends MX_Controller
         sort($this->timeResult);
 
         if (isset($this->roomResult[$time_selected])) {
+            if ($int) {
+                return true;
+            }
             foreach ($this->roomResult[$time_selected] as $value) {
                 $output['results'][] = ['id' => $value, 'text' => $value];
             }
@@ -338,7 +347,6 @@ class Api extends MX_Controller
         }
     }
 
-
     public function getTotalValue()
     {
         $service_id = (isset($_GET['input_service'])) ? addslashes($_GET['input_service']) : false;
@@ -363,6 +371,32 @@ class Api extends MX_Controller
         ];
 
         echo json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    public function checkOutService()
+    {
+        $service_id = (isset($_POST['input_service'])) ? addslashes($_POST['input_service']) : false;
+        $duration = (isset($_POST['input_durasi'])) ? addslashes(POSTDurationValue($_POST['input_durasi'])) : false;
+        $therapis_id = (isset($_POST['input_terapis'])) ? addslashes($_POST['input_terapis']) : false;
+        $date = (isset($_POST['input_tanggal'])) ? addslashes($_POST['input_tanggal']) : 'now';
+        $time = (isset($_POST['input_jam'])) ? addslashes($_POST['input_jam']) : false;
+        $room_id = (isset($_POST['input_kamar'])) ? addslashes($_POST['input_kamar']) : false;
+        $name = (isset($_POST['name'])) ? addslashes($_POST['name']) : false;
+        $phone = (isset($_POST['phone'])) ? addslashes($_POST['phone']) : false;
+        $email = (isset($_POST['email'])) ? addslashes($_POST['email']) : false;
+        
+        if (!$service_id || !$duration || !$therapis_id || !$date || !$time || !$room_id || !$name || !$phone || !$email) {
+            echo json_encode('Method is not allowed', JSON_PRETTY_PRINT);
+            exit();
+        }
+
+        if (!$this->getAvailableRoom(true, $service_id, $duration, $therapis_id, $date, $time, $room_id, $name, $phone, $email)) {
+            echo json_encode('Unavailable', JSON_PRETTY_PRINT);
+            exit();
+        }
+
+        $result = $this->order->insertServiceOrder($service_id, $duration, $therapis_id, $date, $time, $room_id, $name, $phone, $email);
+
     }
 
     //Unused method
