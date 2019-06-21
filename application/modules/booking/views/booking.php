@@ -192,7 +192,7 @@
 					<div class="row text-white text-center">
 						<div class="col-md-12">
 							<h1 class="mb-3">
-								The Lux Spa & Massage
+								The Lux Facial & Massage
 							</h1>
 
 							<h4 class="font-weight-normal">
@@ -288,6 +288,104 @@
 						</div>
 					</div>
 				</div>
+				<div class="modal fade" id="nextForm" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
+				  	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+				    	<div class="modal-content">
+				      		<div class="modal-header">
+				        	<h5 class="modal-title" id="title">Konfirmasi</h5>
+				        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				          		<span aria-hidden="true">&times;</span>
+				        	</button>
+					      	</div>
+					      	<div class="modal-body">
+					        	<div class="container">
+					        		<div class="row">
+					        			<div class="col-md-6">
+					        				<h5>Rincian</h5>
+					        				<div class="form-group">
+					                            <label class="control-label">Name</label>
+					                            <div class="inputGroupContainer">
+					                               <div class="input-group">
+					                               		<div class="input-group-prepend">
+						                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-user"></i></span>
+						                                </div>
+					                                  	<input type="text" name="name" class="form-control" id="name" placeholder="Nama Lengkap" required>
+					                                  	<div class="invalid-feedback">Nama harus diisi</div>
+					                               </div>
+					                            </div>
+					                        </div>
+					                        <div class="form-group">
+					                            <label class="control-label">Nomor Handphone</label>
+					                            <div class="inputGroupContainer">
+					                               <div class="input-group">
+					                               		<div class="input-group-prepend">
+						                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
+						                                </div>
+					                                  	<input type="text" name="phone" class="form-control" id="phone" placeholder="Nomor Handphone" required>
+					                                  	<div class="invalid-feedback">Nomor telepon tidak valid</div>
+					                               </div>
+					                            </div>
+					                        </div>
+					                        <div class="form-group">
+					                            <label class="control-label">Email</label>
+					                            <div class="inputGroupContainer">
+					                               <div class="input-group">
+					                               		<div class="input-group-prepend">
+						                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-at"></i></span>
+						                                </div>
+					                                  	<input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+					                                  	<div class="invalid-feedback">Email tidak valid</div>
+					                               </div>
+					                            </div>
+					                        </div>
+					        			</div>
+					        			<div class="col-md-6">
+					        				<h5>Rincian Pesanan</h5>
+					        				<div class="row">
+					        					<div class="col-6">
+					        						<div class="o-list">
+							        					<label class="control-label">Layanan</label>
+							        					<div class="o-list-item" id="o_service">A</div>
+							        				</div>
+							        				<div class="o-list">
+							        					<label class="control-label">Terapis</label>
+							        					<div class="o-list-item" id="o_terapis">B</div>
+							        				</div>
+							        				<div class="o-list">
+							        					<label class="control-label">Tanggal</label>
+							        					<div class="o-list-item" id="o_tanggal">A</div>
+							        				</div>
+					        					</div>
+					        					<div class="col-6">
+					        						<div class="o-list">
+							        					<label class="control-label">Jam</label>
+							        					<div class="o-list-item" id="o_jam">B</div>
+							        				</div>
+							        				<div class="o-list">
+							        					<label class="control-label">Durasi</label>
+							        					<div class="o-list-item" id="o_durasi">A</div>
+							        				</div>
+							        				<div class="o-list">
+							        					<label class="control-label">Kamar</label>
+							        					<div class="o-list-item" id="o_kamar">B</div>
+							        				</div>
+					        					</div>
+					        				</div>
+					        				<div class="o-total float-right">
+					        					<label>Total:</label>
+					        					<div class="o-value" id="o_value">Rp. 0</div>
+					        				</div>
+					        			</div>
+					        		</div>
+					        	</div>
+					      	</div>
+					      	<div class="modal-footer">
+					        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
+					        	<button type="submit" class="btn btn-primary" id="checkout">Checkout</button>
+					      	</div>
+				    	</div>
+				  	</div>
+				</div>
 			</form>
 		</div>
 
@@ -296,7 +394,7 @@
 
 				<div class="row">
 					<div class="col-md-4 mb-5 mb-xl-0">
-						<h3>The Lux Spa & Massage</h3>
+						<h3>The Lux Facial & Massage</h3>
 					</div>
 
 					<div class="col-md-8">
@@ -307,7 +405,7 @@
 								<div class="list-group list-group-flush">
 									<a href="#!" target="_blank" class="list-group-item text-dark"><i class="fas fa-map-marker-alt fa-lg mr-2"></i> Jl. Mampang Prapatan XV no 12 B. Pancoran, Jakarta Selatan</a>
 									<a href="#!" target="_blank" class="list-group-item text-dark"><i class="fas fa-phone fa-lg mr-2"></i> 08111699994</a>
-								</div>
+			    					</div>
 							</div>		  
 						</div>
 					</div>
@@ -315,7 +413,7 @@
 
 				<div class="row align-items-center justify-content-md-between mt-5 pt-5">
 					<div class="col-md-6 text-center text-md-left mb-3 mb-xl-0">
-						The Lux Spa & Massage &copy; 2019. All rights reserved.
+						The Lux Facial & Massage &copy; 2019. All rights reserved.
 					</div>
 
 					<div class="col-md-6 text-center text-md-right">
@@ -323,101 +421,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="modal fade" id="nextForm" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
-		  	<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-		    	<div class="modal-content">
-		      		<div class="modal-header">
-		        	<h5 class="modal-title" id="title">Konfirmasi</h5>
-		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          		<span aria-hidden="true">&times;</span>
-		        	</button>
-			      	</div>
-			      	<div class="modal-body">
-			        	<div class="container">
-			        		<div class="row">
-			        			<div class="col-md-6">
-			        				<h5>Rincian</h5>
-			        				<div class="form-group">
-			                            <label class="control-label">Name</label>
-			                            <div class="inputGroupContainer">
-			                               <div class="input-group">
-			                               		<div class="input-group-prepend">
-				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-user"></i></span>
-				                                </div>
-			                                  	<input type="text" name="name" class="form-control" id="name" placeholder="Nama Lengkap">
-			                               </div>
-			                            </div>
-			                        </div>
-			                        <div class="form-group">
-			                            <label class="control-label">Nomor Handphone</label>
-			                            <div class="inputGroupContainer">
-			                               <div class="input-group">
-			                               		<div class="input-group-prepend">
-				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
-				                                </div>
-			                                  	<input type="text" name="phone" class="form-control" id="phone" placeholder="Nomor Handphone">
-			                               </div>
-			                            </div>
-			                        </div>
-			                        <div class="form-group">
-			                            <label class="control-label">Email</label>
-			                            <div class="inputGroupContainer">
-			                               <div class="input-group">
-			                               		<div class="input-group-prepend">
-				                                  	<span class="input-group-text" style="max-width: 100%;"><i class="fa fa-at"></i></span>
-				                                </div>
-			                                  	<input type="email" name="phone" class="form-control" id="email" placeholder="Email">
-			                               </div>
-			                            </div>
-			                        </div>
-			        			</div>
-			        			<div class="col-md-6">
-			        				<h5>Rincian Pesanan</h5>
-			        				<div class="row">
-			        					<div class="col-6">
-			        						<div class="o-list">
-					        					<label class="control-label">Layanan</label>
-					        					<div class="o-list-item" id="o_service">A</div>
-					        				</div>
-					        				<div class="o-list">
-					        					<label class="control-label">Terapis</label>
-					        					<div class="o-list-item" id="o_terapis">B</div>
-					        				</div>
-					        				<div class="o-list">
-					        					<label class="control-label">Tanggal</label>
-					        					<div class="o-list-item" id="o_tanggal">A</div>
-					        				</div>
-			        					</div>
-			        					<div class="col-6">
-			        						<div class="o-list">
-					        					<label class="control-label">Jam</label>
-					        					<div class="o-list-item" id="o_jam">B</div>
-					        				</div>
-					        				<div class="o-list">
-					        					<label class="control-label">Durasi</label>
-					        					<div class="o-list-item" id="o_durasi">A</div>
-					        				</div>
-					        				<div class="o-list">
-					        					<label class="control-label">Kamar</label>
-					        					<div class="o-list-item" id="o_kamar">B</div>
-					        				</div>
-			        					</div>
-			        				</div>
-			        				<div class="o-total float-right">
-			        					<label>Total:</label>
-			        					<div class="o-value" id="o_value">Rp. 0</div>
-			        				</div>
-			        			</div>
-			        		</div>
-			        	</div>
-			      	</div>
-			      	<div class="modal-footer">
-			        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
-			        	<button type="button" class="btn btn-primary" onclick="checkOut();">Checkout</button>
-			      	</div>
-		    	</div>
-		  	</div>
 		</div>
 
 		<!-- Optional JavaScript -->
@@ -458,9 +461,9 @@
 				$(".cs-navbar").addClass("cs-navbar-shadow");
 			}
 
-			$("#nextBtn").on('click', function (e) {
-				getTotal($('#order_form').serialize())
-			})
+			function isNumeric(n) {
+			  	return !isNaN(parseInt(n)) && isFinite(n);
+			}
 
 			$(window).scroll(function() 
 			{
@@ -473,6 +476,22 @@
 					$(".cs-navbar").addClass("cs-navbar-shadow");
 				}
 			});
+
+			$("#nextBtn").on('click', function (e) {
+				getTotal($('#order_form').serialize())
+			})
+
+			$('#phone').on('keypress', function () {
+				value = document.getElementById('phone').value
+				if (!isNumeric(value)) {
+					$(this).val('')
+				}
+			})
+
+			$("#checkout").on('click', function (e) {
+				e.preventDefault()
+				checkOut($('#order_form').serialize())
+			})
 
 			//Service form logic
 
@@ -755,8 +774,18 @@
 				})
 			}
 
-			function checkOut(argument) {
-				console.log('checkout')
+			function checkOut(form) {
+				$.ajax({
+					url: "<?= base_url('api/checkOutService')?>",
+					method: 'post',
+					dataType: 'json',
+					data: form,
+					success: function (data) {
+						if (data.status) {
+							window.location.href = "<?= base_url('booking/invoice/')?>" + data.invoice
+						}
+					}
+				})
 			}
 
 			function enableForm(targets) {

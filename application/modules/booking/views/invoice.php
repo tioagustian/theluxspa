@@ -116,7 +116,25 @@
 							<h4>Invoice <small><?= $invoice_id; ?></small></h4>
 						</div>
 						<div class="col-6">
-							<span class="i-date float-right"><?= $status; ?></span>
+							<?php switch ($status) {
+								case 'pending_payment':
+							?>
+							<strong class="i-date float-right" style="color: orange">Pending</strong>
+							<?php break;
+								case 'paid-off':
+							?>
+							<strong class="i-date float-right" style="color: green">Lunas</strong>
+							<?php break;
+								case 'cancel_order':
+							?>
+							<strong class="i-date float-right" style="color: red">EXPIRED</strong>
+							<?php break;
+								default :
+							?>
+							<strong class="i-date float-right" style="color: blue">REFUND</strong>
+							<?php break; 
+								}
+							?>
 						</div>
 					</div>
 				</div>
@@ -194,7 +212,7 @@
 				    								<td class="no-line"></td>
 				    								<td class="thick-line"></td>
 				    								<td class="no-line text-center"><strong>Total</strong></td>
-				    								<td class="no-line text-right">Rp. <?= $price?></td>
+				    								<td class="no-line text-right">Rp. <?= $total?></td>
 				    							</tr>
 				    						</tbody>
 				    					</table>
@@ -208,7 +226,7 @@
 					<div class="row">
 						<div class="col-6">
 							<div>
-								Bayar sebelum <?= $expired_in ?> <small id="counter" style="color: darkgrey;">(06:00:00)</small>
+								Bayar sebelum <?= $expired_in ?> <small id="countdown" style="color: darkgrey;">(06:00:00)</small>
 							</div>
 						</div>
 						<div class="col-6">
@@ -224,7 +242,7 @@
 
 				<div class="row">
 					<div class="col-md-4 mb-5 mb-xl-0">
-						<h3>The Lux Spa & Massage</h3>
+						<h3>The Lux Facial & Massage</h3>
 					</div>
 
 					<div class="col-md-8">
@@ -243,7 +261,7 @@
 
 				<div class="row align-items-center justify-content-md-between mt-5 pt-5">
 					<div class="col-md-6 text-center text-md-left mb-3 mb-xl-0">
-						The Lux Spa & Massage &copy; 2019. All rights reserved.
+						The Lux Facial & Massage &copy; 2019. All rights reserved.
 					</div>
 
 					<div class="col-md-6 text-center text-md-right">
@@ -281,6 +299,22 @@
 
 			return result
 		}
+
+		var countdown = setInterval(function () {
+			var deadline = new Date('<?= $expired_in ?>').getTime()
+			var now = new Date().getTime();
+			var t = deadline - now; 
+			var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+			var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+			var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+			var seconds = Math.floor((t % (1000 * 60)) / 1000);
+			var el = document.getElementById('countdown')
+			el.innerHTML = '(' + hours + ':' + minutes + ':' + seconds + ')'
+			if (t < 0) {
+				e.style = 'color: red;'
+				el.innerHTML = '(EXPIRED)'
+			}
+		}, 1000)
 
 		$(document).ready(function() 
 		{

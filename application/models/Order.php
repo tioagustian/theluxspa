@@ -19,9 +19,9 @@ class Order extends CI_Model
         $time = date('H:i:s', strtotime($time));
         $currentDate = date('Y/m/d H:i:s', strtotime('now'));
         $expiry = date('Y/m/d H:i:s', strtotime('+6 hours'));
-        $service = $this->db->get_where('services', $service_id);
-        $price = $service->price;
-
+        $service = $this->db->get_where('services', ['id'=>$service_id])->row_array();
+        $price = $service['price'];
+        $total = round(($service['price'] / 15) * $duration, -2);
         $data_invoice = [
             'name' => $name,
             'email' => $email,
@@ -57,49 +57,20 @@ class Order extends CI_Model
                     'order_id' => $ord_id,
                     'service_id' => $service_id,
                     'worker_id' => $therapis_id,
+                    'room_id' => $room_id,
                     'duration' => $duration,
+                    'total' => $total,
                     'date' => $date,
                     'time' => $time,
                     'code' => $order_detail_id,
                     'status' => 'pending_payment'
                 ];
 
-                $insert_order_detail = $this->db->insert('service_orders', $data_order_detail);
+                $insert_order_detail = $this->db->insert('service_order_detail', $data_order_detail);
 
                 if ($insert_order_detail) {
-                    $sql = "SELECT
-                              invoices.name,
-                              invoices.email,
-                              invoices.phone,
-                              invoices.voucher_number,
-                              invoices.status,
-                              invoices.method,
-                              invoices.expiry,
-                              invoices.created_at,
-                              services.name AS service,
-                              services.price,
-                              service_order_detail.total,
-                              workers.name AS therapis,
-                              rooms.name AS room,
-                              service_order_detail.duration,
-                              service_order_detail.date,
-                              service_order_detail.time,
-                              service_order_detail.code,
-                              service_order_detail.name AS _name
-                            FROM service_orders
-                              INNER JOIN invoices
-                                ON service_orders.invoice_id = invoices.id
-                              INNER JOIN service_order_detail
-                                ON service_order_detail.order_id = service_orders.id
-                              INNER JOIN services
-                                ON service_order_detail.service_id = services.id
-                              INNER JOIN workers
-                                ON service_order_detail.worker_id = workers.id
-                              INNER JOIN rooms
-                                ON service_order_detail.room_id = rooms.id
-                            WHERE invoices.id = $inv_id";
 
-                    $result = $this->db->query($sql)->get()->result;
+                    $result = $this->db->get_where('invoices', ['id' => $inv_id])->row();
 
                     return $result;
 
@@ -120,8 +91,7 @@ class Order extends CI_Model
     {
 
         $inv_sql = $this->db->get_where('invoices', ['voucher_number' => $invoice]);
-
-        if (!$inv_sql) {
+        if (!$inv_sql->num_rows()) {
             return [];
         }
 
@@ -142,6 +112,7 @@ class Order extends CI_Model
                   workers.name AS therapis,
                   rooms.name AS room,
                   service_order_detail.duration,
+                  service_order_detail.total,
                   service_order_detail.date,
                   service_order_detail.time,
                   service_order_detail.code,
@@ -168,10 +139,11 @@ class Order extends CI_Model
     {
         $prefix = 'LUX-ORD';
         $date = date('Ymd', strtotime('now'));
-        $currentDate = date('Y/m/d H:i:s', strtotime('now'));
-        $row = $this->db->get_where('invoices', ['created_at' => $currentDate])->num_rows() + 1;
-        $records = $this->numberFormat($value, 3);
-
+        $beginOfDay = date('Y/m/d H:i:s',strtotime("midnight", strtotime('now')));
+        $endOfDay   = date('Y/m/d H:i:s', strtotime("tomorrow", strtotime("midnight", strtotime('now'))) - 1);
+        $row = $this->db->query("SELECT * FROM invoices WHERE created_at BETWEEN '$beginOfDay' AND '$endOfDay'")->num_rows() + 1;
+        $records = $this->numberFormat($row, 3);
+        // die($this->db->last_query());
         return $prefix . $date . $records;
     }
 

@@ -59,7 +59,7 @@
 					<div class="row text-white text-center">
 						<div class="col-md-12">
 							<h1 class="mb-3">
-								The Lux Spa & Massage
+								The Lux Facial & Massage
 							</h1>
 
 							<h4 class="font-weight-normal">
@@ -75,7 +75,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="mb-2">
-						<h3>Tentang The Lux Spa & Massage</h3>
+						<h3>Tentang The Lux Facial & Massage</h3>
 					</div>
 
 					<hr class="mt-0 mr-auto text-center position-relative border-0" style="margin-left: 0;margin-bottom: 40px;height: 3px;width: 70px;background: #6aaf08;">
@@ -328,7 +328,7 @@
 
 				<div class="row">
 					<div class="col-md-4 mb-5 mb-xl-0">
-						<h3>The Lux Spa & Massage</h3>
+						<h3>The Lux Facial & Massage</h3>
 					</div>
 
 					<div class="col-md-8">
@@ -347,7 +347,7 @@
 
 				<div class="row align-items-center justify-content-md-between mt-5 pt-5">
 					<div class="col-md-6 text-center text-md-left mb-3 mb-xl-0">
-						The Lux Spa & Massage &copy; 2019. All rights reserved.
+						The Lux Facial & Massage &copy; 2019. All rights reserved.
 					</div>
 
 					<div class="col-md-6 text-center text-md-right">

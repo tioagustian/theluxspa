@@ -35,7 +35,7 @@ class Booking extends MX_Controller
         $id = addslashes($id);
         $result = $this->order->getServiceOrder($id);
 
-        if (is_null($result)) {
+        if (count($result) == 0) {
             return redirect(base_url('booking'));
         }
 
@@ -54,7 +54,8 @@ class Booking extends MX_Controller
         $order_detail['service'] = $result['orders']->service;
         $order_detail['therapis'] = $result['orders']->therapis;
         $order_detail['room'] = $result['orders']->room;
-        $order_detail['price'] = $order_detail['total'] = number_format($result['orders']->price);
+        $order_detail['price'] = number_format($result['orders']->price);
+        $order_detail['total'] = number_format($result['orders']->total);
         $order_detail['duration'] = $result['orders']->duration . ' menit';
         $order_detail['date'] = date('d M Y', strtotime($result['orders']->date));
         $order_detail['time'] = date('H:i', strtotime($result['orders']->time));
