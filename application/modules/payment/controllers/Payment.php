@@ -73,11 +73,12 @@ class Payment extends MX_Controller {
         //$credit_card['save_card'] = true;
 
         $time = time();
+        $expiry = round((strtotime($data['invoice_detail']->expiry) - $time) / 60);
 
         $custom_expiry = array(
-            'start_time' => date("Y-m-d H:i:s O",$time),
+            'start_time' => date("Y-m-d H:i:s O", $time),
             'unit' => 'minute', 
-            'duration'  => 120
+            'duration'  => $expiry
         );
         
         $transaction_data = array(
@@ -104,12 +105,10 @@ class Payment extends MX_Controller {
     	var_dump([$trx_id, $this->db->last_query()]);
     }
 
-    public function finish()
-    {
-    	$result = json_decode($this->input->post('result_data'));
-    	echo 'RESULT <br><pre>';
-    	var_dump($result);
-    	echo '</pre>' ;
+    public function finish(){
+         $order_id = $this->input->get('order_id');
+         $data['order_id'] = $order_id;
+         $this->load->view('finish', $data);
 
     }
 

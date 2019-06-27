@@ -143,7 +143,7 @@
 					</div>
 				</div>
 				<div class="container">
-				    <div class="row">
+				    <div class="row mb-3">
 				        <div class="col-md-12">
 				    		<div class="row">
 				    			<div class="col-md-6">
@@ -155,16 +155,23 @@
 				    				</address>
 				    			</div>
 				    			<div class="col-md-6">
-				    				<address>
-				    					<div class="mb-2">
-				    						<strong>Tanggal pemesanan:</strong><br>
-				    						<?= $date_created ?>
+				    				<div class="row">
+				    					<div class="col-md-6">
+				    						<address>
+						    					<div class="mb-2">
+						    						<strong>Tanggal pemesanan:</strong><br>
+						    						<?= $date_created ?>
+						    					</div>
+						        				<div class="mb-2">
+						    						<strong>Tanggal booking:</strong><br>
+						    						<?= $date . ', ' . $time; ?>
+						    					</div>
+						    				</address>
 				    					</div>
-				        				<div class="mb-2">
-				    						<strong>Tanggal booking:</strong><br>
-				    						<?= $date . ', ' . $time; ?>
+				    					<div class="col-md-6" style="display: flex;justify-content: center;">
+				    						<img src="<?= base_url('booking/sobci/'.$invoice_id)?>" style="height: 62px;" />
 				    					</div>
-				    				</address>
+				    				</div>
 				    			</div>
 				    		</div>
 				    	</div>
@@ -229,7 +236,8 @@
 				<div class="col-md-12 i-footer">
 					<div class="row">
 						<?php 
-							if ($status == 'unpaid') {
+							switch ($status) {
+								case 'unpaid':
 						?>
 						<div class="col-6">
 							<div>
@@ -243,7 +251,20 @@
 								<input type="submit" name="pay" class="btn btn-primary float-right" id="pay" value="Bayar" />
 							</form>
 						</div>
-						<?php } ?>
+						<?php break;
+							case 'pending': ?>
+						<div class="col-12">
+							<span>
+								Menunggu hasil pembayaran
+							</span>
+						</div>
+						<?php	break;
+							default: ?>
+							<div class="col-12">
+								<button class="btn btn-outline-dark float-right" id="pdf"><i class="far fa-file-pdf"></i> PDF</button>
+							</div>
+						<?php break;
+						} ?>
 					</div>
 				</div>
 			</div>
@@ -292,6 +313,10 @@
 		<script src="<?= base_url('assets/plugins/parallax/parallax.min.js'); ?>"></script>
 
 		<script>
+			$('#pdf').on('click', function (e) {
+				e.preventDefault()
+				window.location.href = "<?= base_url('booking/invoice/'.$invoice_id.'/pdf') ?>"
+			})
 			<?php 
 
 			switch ($status) {
