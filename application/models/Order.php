@@ -27,7 +27,7 @@ class Order extends CI_Model
             'email' => $email,
             'phone' => $phone,
             'voucher_number' => $invoice_id,
-            'status' => 'pending_payment',
+            'status' => 'unpaid',
             'method' => 'online',
             'expiry' => $expiry,
             'created_at' => $currentDate
@@ -137,7 +137,7 @@ class Order extends CI_Model
 
     private function createInvoiceID()
     {
-        $prefix = 'LUX-ORD';
+        $prefix = 'LUX-TEST';
         $date = date('Ymd', strtotime('now'));
         $beginOfDay = date('Y/m/d H:i:s',strtotime("midnight", strtotime('now')));
         $endOfDay   = date('Y/m/d H:i:s', strtotime("tomorrow", strtotime("midnight", strtotime('now'))) - 1);

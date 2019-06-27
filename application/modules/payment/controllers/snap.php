@@ -110,7 +110,10 @@ class Snap extends CI_Controller {
             'item_details'       => $item_details,
             'customer_details'   => $customer_details,
             'credit_card'        => $credit_card,
-            'expiry'             => $custom_expiry
+            'expiry'             => $custom_expiry,
+            'callbacks' 		 => [
+            	'finish' => base_url('booking/invoice/') . $transaction_details['order_id']
+            ]
         );
 
 		error_log(json_encode($transaction_data));

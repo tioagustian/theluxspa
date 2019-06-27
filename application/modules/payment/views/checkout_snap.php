@@ -22,11 +22,10 @@
       $(this).attr("disabled", "disabled");
     
     $.ajax({
-      url: '<?= base_url()?>payment/token/get/LUX-ORD2019062101',
+      url: '<?= base_url()?>payment/snap/token/LUX-ORD2019062102',
       cache: false,
 
       success: function(data) {
-        //location = data;
 
         console.log('token = '+data);
         

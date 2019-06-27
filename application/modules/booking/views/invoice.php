@@ -21,6 +21,10 @@
 
 		<!--- Title --->
 		<title>The Lux Spa - Invoice</title>
+		<script type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="SB-Mid-client-c0azpMyYUpTK-ckY"></script>
+    	<!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
 
 		<style type="text/css">
 
@@ -117,21 +121,21 @@
 						</div>
 						<div class="col-6">
 							<?php switch ($status) {
-								case 'pending_payment':
+								case 'pending':
 							?>
 							<strong class="i-date float-right" style="color: orange">Pending</strong>
 							<?php break;
-								case 'paid-off':
+								case 'settlement':
 							?>
 							<strong class="i-date float-right" style="color: green">Lunas</strong>
 							<?php break;
-								case 'cancel_order':
+								case 'canceled':
 							?>
-							<strong class="i-date float-right" style="color: red">EXPIRED</strong>
+							<strong class="i-date float-right" style="color: red">Dibatalkan</strong>
 							<?php break;
 								default :
 							?>
-							<strong class="i-date float-right" style="color: blue">REFUND</strong>
+							<strong class="i-date float-right" style="color: blue">Belum dibayar</strong>
 							<?php break; 
 								}
 							?>
@@ -224,14 +228,22 @@
 				</div>
 				<div class="col-md-12 i-footer">
 					<div class="row">
+						<?php 
+							if ($status == 'unpaid') {
+						?>
 						<div class="col-6">
 							<div>
 								Bayar sebelum <?= $expired_in ?> <small id="countdown" style="color: darkgrey;">(06:00:00)</small>
 							</div>
 						</div>
 						<div class="col-6">
-							<div class="btn btn-primary float-right">Bayar</div>
+							<form id="payment-form" method="post" action="<?= base_url()?>payment/snap/finish">
+								<input type="hidden" name="result_type" id="result-type" value="">
+      							<input type="hidden" name="result_data" id="result-data" value="">
+								<input type="submit" name="pay" class="btn btn-primary float-right" id="pay" value="Bayar" />
+							</form>
 						</div>
+						<?php } ?>
 					</div>
 				</div>
 			</div>
@@ -280,61 +292,23 @@
 		<script src="<?= base_url('assets/plugins/parallax/parallax.min.js'); ?>"></script>
 
 		<script>
+			<?php 
 
+			switch ($status) {
+				case 'unpaid': ?>
 
-		function formatDate(today = new Date(), format = 'dd-mmm-yyyy') {
-			var tomorrow = new Date(today)
-			tomorrow.setDate(today.getDate()+1)
-			var dd = tomorrow.getDate()
-			var mmm = today.getMonth()
-			var yyyy = today.getFullYear()
-			var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-			if (dd < 10) {
-			  dd = '0' + dd
+			var tnv__0x225a=['(EXPIRED)','ready','pageYOffset','.cs-navbar','addClass','cs-navbar-shadow','scroll','scrollTop','removeClass','#pay','click','preventDefault','attr','disabled','ajax','<?= base_url('payment/token/'.$invoice_id)?>','result-type','result-data','<?= base_url('payment/update/'.$invoice_id)?>','post','finish_redirect_url','pending','hide','return\x20(function()\x20','{}.constructor(\x22return\x20this\x22)(\x20)','console','debug','info','error','exception','trace','log','warn','<?=$expired_in?>','getTime','floor','getElementById','countdown','innerHTML','style','color:\x20red;'];(function(_0x390ef0,_0x1bbc01){var _0x1a6f76=function(_0x327ea6){while(--_0x327ea6){_0x390ef0['push'](_0x390ef0['shift']());}};_0x1a6f76(++_0x1bbc01);}(tnv__0x225a,0x1da));var tnv__0x3968=function(_0x12b843,_0x2ce7f3){_0x12b843=_0x12b843-0x0;var _0xde2480=tnv__0x225a[_0x12b843];return _0xde2480;};var _0xd95e52=function(){var _0xb9da6d=!![];return function(_0x22cb3d,_0x113048){var _0x1a8dbf=_0xb9da6d?function(){if(_0x113048){var _0x4ad8fe=_0x113048['apply'](_0x22cb3d,arguments);_0x113048=null;return _0x4ad8fe;}}:function(){};_0xb9da6d=![];return _0x1a8dbf;};}();var _0x5773e8=_0xd95e52(this,function(){var _0x3df76e=function(){};var _0x28fa26;try{var _0x24f9b3=Function(tnv__0x3968('0x0')+tnv__0x3968('0x1')+');');_0x28fa26=_0x24f9b3();}catch(_0x48c35b){_0x28fa26=window;}if(!_0x28fa26[tnv__0x3968('0x2')]){_0x28fa26[tnv__0x3968('0x2')]=function(_0x3df76e){var _0x5913e9={};_0x5913e9['log']=_0x3df76e;_0x5913e9['warn']=_0x3df76e;_0x5913e9[tnv__0x3968('0x3')]=_0x3df76e;_0x5913e9[tnv__0x3968('0x4')]=_0x3df76e;_0x5913e9[tnv__0x3968('0x5')]=_0x3df76e;_0x5913e9[tnv__0x3968('0x6')]=_0x3df76e;_0x5913e9[tnv__0x3968('0x7')]=_0x3df76e;return _0x5913e9;}(_0x3df76e);}else{_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x8')]=_0x3df76e;_0x28fa26['console'][tnv__0x3968('0x9')]=_0x3df76e;_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x3')]=_0x3df76e;_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x4')]=_0x3df76e;_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x5')]=_0x3df76e;_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x6')]=_0x3df76e;_0x28fa26[tnv__0x3968('0x2')][tnv__0x3968('0x7')]=_0x3df76e;}});_0x5773e8();var countdown=setInterval(function(){var _0x3db68a=new Date(tnv__0x3968('0xa'))[tnv__0x3968('0xb')]();var _0x28417e=new Date()[tnv__0x3968('0xb')]();var _0x5ab91d=_0x3db68a-_0x28417e;var _0x21442d=Math[tnv__0x3968('0xc')](_0x5ab91d/(0x3e8*0x3c*0x3c*0x18));var _0x2304b5=Math[tnv__0x3968('0xc')](_0x5ab91d%(0x3e8*0x3c*0x3c*0x18)/(0x3e8*0x3c*0x3c));if(_0x2304b5<0xa){_0x2304b5='0'+_0x2304b5;}var _0x4a077c=Math[tnv__0x3968('0xc')](_0x5ab91d%(0x3e8*0x3c*0x3c)/(0x3e8*0x3c));if(_0x4a077c<0xa){_0x4a077c='0'+_0x4a077c;}var _0x515681=Math['floor'](_0x5ab91d%(0x3e8*0x3c)/0x3e8);if(_0x515681<0xa){_0x515681='0'+_0x515681;}var _0x589636=Math[tnv__0x3968('0xc')](_0x5ab91d%(0x3e8*0x3c)/0xa)['toString']();var _0x337397=document[tnv__0x3968('0xd')](tnv__0x3968('0xe'));_0x337397[tnv__0x3968('0xf')]='('+_0x2304b5+':'+_0x4a077c+':'+_0x515681+':'+_0x589636['slice'](-0x2)+')';if(_0x5ab91d<0x0){e[tnv__0x3968('0x10')]=tnv__0x3968('0x11');_0x337397[tnv__0x3968('0xf')]=tnv__0x3968('0x12');}},0xa);$(document)[tnv__0x3968('0x13')](function(){if(window[tnv__0x3968('0x14')]!=0x0){$(tnv__0x3968('0x15'))[tnv__0x3968('0x16')](tnv__0x3968('0x17'));}$(window)[tnv__0x3968('0x18')](function(){if($(window)[tnv__0x3968('0x19')]()==0x0){$('.cs-navbar')[tnv__0x3968('0x1a')](tnv__0x3968('0x17'));}else{$(tnv__0x3968('0x15'))[tnv__0x3968('0x16')]('cs-navbar-shadow');}});$(tnv__0x3968('0x1b'))[tnv__0x3968('0x1c')](function(_0x3e3951){_0x3e3951[tnv__0x3968('0x1d')]();$(this)[tnv__0x3968('0x1e')](tnv__0x3968('0x1f'),'disabled');$[tnv__0x3968('0x20')]({'url':tnv__0x3968('0x21'),'cache':![],'success':function(_0x315d6c){var _0xcf41d2=document['getElementById'](tnv__0x3968('0x22'));var _0x458217=document['getElementById'](tnv__0x3968('0x23'));function _0x3b4fd8(_0x4aff35,_0x315d6c){$['ajax']({'url':tnv__0x3968('0x24'),'cache':![],'data':_0x315d6c,'method':tnv__0x3968('0x25'),'success':function(_0x53ada9){}});}snap['pay'](_0x315d6c,{'onSuccess':function(_0x196983){_0x3b4fd8('success',_0x196983);window['location']=_0x196983[tnv__0x3968('0x26')];},'onPending':function(_0x6c2dc8){_0x3b4fd8(tnv__0x3968('0x27'),_0x6c2dc8);window['location']=_0x6c2dc8['finish_redirect_url'];},'onError':function(_0x277a89){_0x3b4fd8(tnv__0x3968('0x5'),_0x277a89);}});},'error':function(_0x399840){snap[tnv__0x3968('0x28')]();}});});});
+					
+			<?php	break;
+				
+				default:
+					# code...
+					break;
 			}
 
-			result = format.replace('dd', dd)
-			result = result.replace('mmm', month[mmm])
-			result = result.replace('yyyy', yyyy)
+			?>
+		<?= $script?>
 
-			return result
-		}
-
-		var countdown = setInterval(function () {
-			var deadline = new Date('<?= $expired_in ?>').getTime()
-			var now = new Date().getTime();
-			var t = deadline - now; 
-			var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
-			var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
-			var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
-			var seconds = Math.floor((t % (1000 * 60)) / 1000);
-			var el = document.getElementById('countdown')
-			el.innerHTML = '(' + hours + ':' + minutes + ':' + seconds + ')'
-			if (t < 0) {
-				e.style = 'color: red;'
-				el.innerHTML = '(EXPIRED)'
-			}
-		}, 1000)
-
-		$(document).ready(function() 
-		{
-			if (window.pageYOffset != 0)
-			{
-				$(".cs-navbar").addClass("cs-navbar-shadow");
-			}
-
-			$(window).scroll(function() 
-			{
-				if ($(window).scrollTop() == 0) 
-				{
-					$(".cs-navbar").removeClass("cs-navbar-shadow");
-				}
-				else 
-				{
-					$(".cs-navbar").addClass("cs-navbar-shadow");
-				}
-			});
-		});
 		</script>
 	</body>
 </html>

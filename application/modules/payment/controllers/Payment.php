@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Token extends MX_Controller {
+class Payment extends MX_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -29,7 +29,7 @@ class Token extends MX_Controller {
 		$this->load->helper('url');	
     }
 
-    public function get($invoice = '')
+    public function token($invoice = '')
     {
 
     	if (!$invoice) {
@@ -37,6 +37,11 @@ class Token extends MX_Controller {
     	}
 
     	$data = $this->order->getServiceOrder($invoice);
+
+    	if (count($data) == 0) {
+    		echo json_encode('invalid');
+    		return;
+    	}
 		// Required
 		$transaction_details = array(
 		  'order_id' => $invoice,
@@ -54,36 +59,12 @@ class Token extends MX_Controller {
 		// Optional
 		$item_details = array ($item1_details);
 
-		// Optional
-		$billing_address = array(
-		  'first_name'    => "Andri",
-		  'last_name'     => "Litani",
-		  'address'       => "Mangga 20",
-		  'city'          => "Jakarta",
-		  'postal_code'   => "16602",
-		  'phone'         => "081122334455",
-		  'country_code'  => 'IDN'
-		);
-
-		// Optional
-		$shipping_address = array(
-		  'first_name'    => "Obet",
-		  'last_name'     => "Supriadi",
-		  'address'       => "Manggis 90",
-		  'city'          => "Jakarta",
-		  'postal_code'   => "16601",
-		  'phone'         => "08113366345",
-		  'country_code'  => 'IDN'
-		);
 
 		// Optional
 		$customer_details = array(
 		  'first_name'    => $data['invoice_detail']->name,
-		  // 'last_name'     => "Litani",
 		  'email'         => $data['invoice_detail']->email,
 		  'phone'         => $data['invoice_detail']->phone
-		  // 'billing_address'  => $billing_address,
-		  // 'shipping_address' => $shipping_address
 		);
 
 		// Data yang akan dikirim untuk request redirect_url.
@@ -92,10 +73,11 @@ class Token extends MX_Controller {
         //$credit_card['save_card'] = true;
 
         $time = time();
+
         $custom_expiry = array(
             'start_time' => date("Y-m-d H:i:s O",$time),
             'unit' => 'minute', 
-            'duration'  => 2
+            'duration'  => 120
         );
         
         $transaction_data = array(
@@ -112,6 +94,16 @@ class Token extends MX_Controller {
 		echo $snapToken;
     }
 
+    public function update($id)
+    {
+    	$trx_id = $this->input->post('transaction_id');
+    	if (isset($trx_id)) {
+    		$this->db->where('voucher_number', $id);
+			$this->db->update('invoices', ['transaction_id' => $trx_id]);
+    	}
+    	var_dump([$trx_id, $this->db->last_query()]);
+    }
+
     public function finish()
     {
     	$result = json_decode($this->input->post('result_data'));
@@ -119,5 +111,62 @@ class Token extends MX_Controller {
     	var_dump($result);
     	echo '</pre>' ;
 
+    }
+
+    public function notificationHandler()
+    {
+		$json_result = file_get_contents('php://input');
+		$result = json_decode($json_result);
+
+		if(!is_null($result)){
+			// $notif = $this->veritrans->status($result->order_id);
+			$invoice = $this->db->get_where('invoices', ['voucher_number' => $result->order_id])->row();
+			if ($invoice->transaction_id != $result->transaction_id) {
+				log_message('error', 'transaction_id not match');
+				return;
+			}
+			$status_code = $result->status_code;
+			$inv['status'] = 'pending';
+			$srv['status'] = 'pending_payment';
+
+			switch ($status_code) {
+				case '200':
+					$inv['status'] = 'settlement';
+					$srv['status'] = 'await';
+					break;
+
+				case '202':
+					$inv['status'] = 'denied';
+					$srv['status'] = 'canceled';
+					break;
+				
+				default:
+					$inv['status'] = 'pending';
+					$srv['status'] = 'pending_payment';
+					break;
+			}
+
+			$this->db->where('voucher_number', $result->order_id);
+			$this->db->update('invoices', $inv);
+			log_message('info','invoice update: ' . $this->db->last_query());
+
+			$query = "SELECT
+					  service_order_detail.id
+					FROM service_orders
+					  INNER JOIN invoices
+					    ON service_orders.invoice_id = invoices.id
+					  INNER JOIN service_order_detail
+					    ON service_order_detail.order_id = service_orders.id
+					WHERE invoices.voucher_number = '$result->order_id'";
+
+			$sOrd = $this->db->query($query)->row();
+			log_message('debug','get order: ' . $this->db->last_query());
+			$this->db->where('id', $sOrd->id);
+			$this->db->update('service_order_detail', $srv);
+			log_message('debug','order update: ' . $this->db->last_query());
+		}
+		log_message('debug','midtrans data: ' . $json_result);
+
+		error_log(print_r($result,TRUE));
     }
 }
