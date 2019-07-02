@@ -62,7 +62,7 @@
                     <div class="navbar-container container-fluid">
                         <ul class="nav-left">
                             <li>
-                                <a href="#!" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
+                                <a href="#!" id="fullScreen" onclick="javascript:toggleFullScreen()" class="waves-effect waves-light">
                                     <i class="full-screen feather icon-maximize"></i>
                                 </a>
                             </li>

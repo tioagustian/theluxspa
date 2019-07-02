@@ -354,12 +354,14 @@ class Auth
 
         $routeName = (is_null($this->CI->uri->segment(2)) ? "index" : $this->CI->uri->segment(2)) . "-" . $this->CI->uri->segment(1);
 
-        if ($this->CI->uri->segment(1) == 'admin') {
+        if ($this->CI->uri->segment(1) == 'admin' || $this->CI->uri->segment(1) == 'cashier') {
             $routeName = (is_null($this->CI->uri->segment(3)) ? "index" : $this->CI->uri->segment(3)) . "-" . $this->CI->uri->segment(2);
             if (is_null($this->CI->uri->segment(2))) {
                 $routeName = 'index-admin';
             }
         }
+
+        // die($routeName);
 
         // if ($this->CI->uri->segment(1) == 'admin')
         //     return true;

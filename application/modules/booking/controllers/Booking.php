@@ -4,7 +4,7 @@
  * Website: https://tioagustian.me
  *
  * Copyright (c) 2019 Tio Agustian
- * Released under the MIT license
+ * 
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 

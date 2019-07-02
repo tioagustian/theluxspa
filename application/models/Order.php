@@ -26,14 +26,14 @@ class Order extends CI_Model
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
-            'voucher_number' => $invoice_id,
+            'invoice_number' => $invoice_id,
             'status' => 'unpaid',
             'method' => 'online',
             'expiry' => $expiry,
             'created_at' => $currentDate
         ];
 
-        $insert_invoice = $this->db->insert('invoices', $data_invoice);
+        $insert_invoice = $this->db->insert('transactions', $data_invoice);
         
         if ($insert_invoice) {
 
@@ -70,17 +70,17 @@ class Order extends CI_Model
 
                 if ($insert_order_detail) {
 
-                    $result = $this->db->get_where('invoices', ['id' => $inv_id])->row();
+                    $result = $this->db->get_where('transactions', ['id' => $inv_id])->row();
 
                     return $result;
 
                 } else {
-                    $this->db->delete('invoices', ['id' => $inv_id]);
+                    $this->db->delete('transactions', ['id' => $inv_id]);
                     $this->db->delete('service_orders', ['id' => $ord_id]);
                 }
 
             } else {
-                $this->db->delete('invoices', ['id' => $inv_id]);
+                $this->db->delete('transactions', ['id' => $inv_id]);
             }
         }
 
@@ -90,7 +90,7 @@ class Order extends CI_Model
     public function getServiceOrder($invoice)
     {
 
-        $inv_sql = $this->db->get_where('invoices', ['voucher_number' => $invoice]);
+        $inv_sql = $this->db->get_where('transactions', ['invoice_number' => $invoice]);
         if (!$inv_sql->num_rows()) {
             return [];
         }
@@ -98,14 +98,14 @@ class Order extends CI_Model
         $result['invoice_detail'] = $inv_sql->row();
 
         $sql = "SELECT
-                  invoices.name,
-                  invoices.email,
-                  invoices.phone,
-                  invoices.voucher_number,
-                  invoices.status,
-                  invoices.method,
-                  invoices.expiry,
-                  invoices.created_at,
+                  transactions.name,
+                  transactions.email,
+                  transactions.phone,
+                  transactions.invoice_number,
+                  transactions.status,
+                  transactions.method,
+                  transactions.expiry,
+                  transactions.created_at,
                   services.name AS service,
                   services.price,
                   service_order_detail.total,
@@ -118,8 +118,8 @@ class Order extends CI_Model
                   service_order_detail.code,
                   service_order_detail.name AS _name
                 FROM service_orders
-                  INNER JOIN invoices
-                    ON service_orders.invoice_id = invoices.id
+                  INNER JOIN transactions
+                    ON service_orders.invoice_id = transactions.id
                   INNER JOIN service_order_detail
                     ON service_order_detail.order_id = service_orders.id
                   INNER JOIN services
@@ -128,7 +128,7 @@ class Order extends CI_Model
                     ON service_order_detail.worker_id = workers.id
                   INNER JOIN rooms
                     ON service_order_detail.room_id = rooms.id
-                WHERE invoices.voucher_number = '$invoice'";
+                WHERE transactions.invoice_number = '$invoice'";
 
         $result['orders'] = $this->db->query($sql)->row();
 
@@ -137,11 +137,11 @@ class Order extends CI_Model
 
     private function createInvoiceID()
     {
-        $prefix = 'LUX-TEST';
+        $prefix = 'LUX-LOCAL';
         $date = date('Ymd', strtotime('now'));
         $beginOfDay = date('Y/m/d H:i:s',strtotime("midnight", strtotime('now')));
         $endOfDay   = date('Y/m/d H:i:s', strtotime("tomorrow", strtotime("midnight", strtotime('now'))) - 1);
-        $row = $this->db->query("SELECT * FROM invoices WHERE created_at BETWEEN '$beginOfDay' AND '$endOfDay'")->num_rows() + 1;
+        $row = $this->db->query("SELECT * FROM transactions WHERE created_at BETWEEN '$beginOfDay' AND '$endOfDay'")->num_rows() + 1;
         $records = $this->numberFormat($row, 3);
         // die($this->db->last_query());
         return $prefix . $date . $records;

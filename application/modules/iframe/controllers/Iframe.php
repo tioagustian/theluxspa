@@ -16,9 +16,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 			$this->crud->set_theme('flexigrid');
 			$this->crud->unset_clone();
 			$this->load->library(['auth']);
-			if (!hasRole() || !hasRole('admin')) {
-				die($this->template->unauthorized());
-			}
+			// if (!hasRole() || !hasRole('admin') || !hasRole('developer')) {
+			// 	die($this->template->unauthorized());
+			// }
 		}
 
 		public function index()
@@ -325,7 +325,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				'name' => $post_array['nama_lengkap'],
 				'username' => $post_array['username'],
 				'password' => $this->password,
-				'id_pegawai' => $primary_key,
 				'created_at' => date("Y-m-d H:i:s"),
 				'status' => $post_array['status']
 			);
@@ -437,9 +436,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 				'status' => ($post_array['status'] == 1) ? 1 : 2
 			);
 
-			$this->db->where('id_pegawai',$post_array['id_pegawai']);
+			// $this->db->where('id_pegawai',$post_array['id_pegawai']);
 
-			return $this->db->update('pegawai', $data);
+			// return $this->db->update('pegawai', $data);
+			return true;
 		}
 
 		private function _users_before_update($post_array,$primary_key)

@@ -8,7 +8,7 @@
      */
     defined('BASEPATH') OR exit('No direct script access allowed');
 
-    class Pesanan extends MX_Controller
+    class Transactions extends MX_Controller
     {
         public function __construct()
         {
@@ -29,7 +29,7 @@
         {
             $data['so_list']['title'] = 'Pesanan Terapi';
             $data['so_list']['description'] = 'Data Pesanan Terapi';
-            $data['url']['getDataPesanan'] = base_url('admin/pesanan/getDataPesanan');
+            $data['url']['getDataPesanan'] = base_url('admin/transactions/getDataPesanan');
             $this->template->setCss([
                 base_url('files/bower_components/datatables.net-bs4/css/dataTables.bootstrap4.min.css'),
                 base_url('files/assets/pages/data-table/css/buttons.dataTables.min.css'),
@@ -58,8 +58,8 @@
             $data = [];
             $i = 1;
             $query = "SELECT
-                      invoices.name AS invoice_name,
-                      invoices.phone AS invoice_phone,
+                      transactions.name AS invoice_name,
+                      transactions.phone AS invoice_phone,
                       service_order_detail.name,
                       service_order_detail.code,
                       workers.name AS worker,
@@ -70,12 +70,12 @@
                       service_order_detail.duration,
                       service_order_detail.status,
                       service_order_detail.total,
-                      invoices.status AS invoice_status,
-                      invoices.voucher_number,
+                      transactions.status AS invoice_status,
+                      transactions.invoice_number,
                       service_orders.created_at
                     FROM service_orders
-                      INNER JOIN invoices
-                        ON service_orders.invoice_id = invoices.id
+                      INNER JOIN transactions
+                        ON service_orders.invoice_id = transactions.id
                       INNER JOIN service_order_detail
                         ON service_order_detail.order_id = service_orders.id
                       INNER JOIN workers
@@ -102,7 +102,7 @@
                     'total' => number_format($result->total),
                     'invoice_name' => $result->invoice_name,
                     'invoice_phone' => $result->invoice_phone,
-                    'invoice_number' => $result->voucher_number,
+                    'invoice_number' => $result->invoice_number,
                     'invoice_status' => $result->invoice_status
                 ];
                 $i++;

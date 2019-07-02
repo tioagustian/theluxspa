@@ -434,382 +434,385 @@
 		<script src="<?= base_url('assets/plugins/parallax/parallax.min.js'); ?>"></script>
 
 		<script>
-
-
-		function formatDate(today = new Date(), format = 'dd-mmm-yyyy') {
-			var tomorrow = new Date(today)
-			tomorrow.setDate(today.getDate()+1)
-			var dd = tomorrow.getDate()
-			var mmm = today.getMonth()
-			var yyyy = today.getFullYear()
-			var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-			if (dd < 10) {
-			  dd = '0' + dd
-			}
-
-			result = format.replace('dd', dd)
-			result = result.replace('mmm', month[mmm])
-			result = result.replace('yyyy', yyyy)
-
-			return result
-		}
-
-		$(document).ready(function() 
-		{
-			if (window.pageYOffset != 0)
-			{
-				$(".cs-navbar").addClass("cs-navbar-shadow");
-			}
-
-			function isNumeric(n) {
-			  	return !isNaN(parseInt(n)) && isFinite(n);
-			}
-
-			$(window).scroll(function() 
-			{
-				if ($(window).scrollTop() == 0) 
-				{
-					$(".cs-navbar").removeClass("cs-navbar-shadow");
+			function formatDate(today = new Date(), format = 'dd-mmm-yyyy') {
+				var tomorrow = new Date(today)
+				tomorrow.setDate(today.getDate()+1)
+				var dd = tomorrow.getDate()
+				var mmm = today.getMonth()
+				var yyyy = today.getFullYear()
+				var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+				if (dd < 10) {
+				  dd = '0' + dd
 				}
-				else 
+
+				result = format.replace('dd', dd)
+				result = result.replace('mmm', month[mmm])
+				result = result.replace('yyyy', yyyy)
+
+				return result
+			}
+
+			$(document).ready(function() 
+			{
+				if (window.pageYOffset != 0)
 				{
 					$(".cs-navbar").addClass("cs-navbar-shadow");
 				}
-			});
 
-			$("#nextBtn").on('click', function (e) {
-				getTotal($('#order_form').serialize())
-			})
-
-			$('#phone').on('keypress', function () {
-				value = document.getElementById('phone').value
-				if (!isNumeric(value)) {
-					$(this).val('')
+				function isNumeric(n) {
+				  	return !isNaN(parseInt(n)) && isFinite(n);
 				}
-			})
 
-			$("#checkout").on('click', function (e) {
-				e.preventDefault()
-				checkOut($('#order_form').serialize())
-			})
+				$(window).scroll(function() 
+				{
+					if ($(window).scrollTop() == 0) 
+					{
+						$(".cs-navbar").removeClass("cs-navbar-shadow");
+					}
+					else 
+					{
+						$(".cs-navbar").addClass("cs-navbar-shadow");
+					}
+				});
 
-			//Service form logic
+				$("#nextBtn").on('click', function (e) {
+					getTotal($('#order_form').serialize())
+				})
 
-			$('#input_service').select2({
-				placeholder: "Pilih Layanan",
-				ajax: {
-					url: "<?= base_url('api/getAvailableServices') ?>",
-					dataType: "json"
-				}
-			})
+				$('#phone').on('keypress', function () {
+					value = document.getElementById('phone').value
+					if (!isNumeric(value)) {
+						$(this).val('')
+					}
+				})
 
-			$('#input_service').on('select2:open', function (e) {
-				$('#input_durasi').val(null).trigger('change')
-				$('#input_terapis').val(null).trigger('change')
-				disableForm([
-					'#input_durasi',
-					'#input_terapis',
-					'#input_tanggal',
-					'#input_jam',
-					'#input_kamar',
-					'.kamarInput',
-					'.next-btn'
-				])
-			})
+				$("#checkout").on('click', function (e) {
+					e.preventDefault()
+					checkOut($('#order_form').serialize())
+				})
 
-			$('#input_service').on('select2:select', function (e) {
-				data = e.params.data
-				enableForm([
-					'#input_durasi'
-				])
-				getServiceDuration(data.id)
-				getTherapis(data.id)
-			})
+				//Service form logic
 
-			// End service form logic
+				$('#input_service').select2({
+					placeholder: "Pilih Layanan",
+					ajax: {
+						url: "<?= base_url('api/getAvailableServices') ?>",
+						dataType: "json"
+					}
+				})
 
-			//Duration service form logic
+				$('#input_service').on('select2:open', function (e) {
+					$('#input_durasi').val(null).trigger('change')
+					$('#input_terapis').val(null).trigger('change')
+					disableForm([
+						'#input_durasi',
+						'#input_terapis',
+						'#input_tanggal',
+						'#input_jam',
+						'#input_kamar',
+						'.kamarInput',
+						'.next-btn'
+					])
+				})
 
-			$('#input_durasi').select2({
-				placeholder: "Pilih Durasi"
-			})
+				$('#input_service').on('select2:select', function (e) {
+					data = e.params.data
+					enableForm([
+						'#input_durasi'
+					])
+					getServiceDuration(data.id)
+					getTherapis(data.id)
+				})
 
-			$('#input_durasi').on('select2:select', function (e) {
-				data = e.params.data
-				enableForm([
-					'#input_terapis'
-				])
-			})
+				// End service form logic
 
-			function getServiceDuration(service_id) {
+				//Duration service form logic
+
 				$('#input_durasi').select2({
-					placeholder: "Pilih Durasi",
-					ajax: {
-						url: "<?= base_url('api/getAvailableServices') ?>/" + service_id + "/duration",
-						dataType: "json",
-						processResults: function (data) {
-							return {
-								results: data.results
+					placeholder: "Pilih Durasi"
+				})
+
+				$('#input_durasi').on('select2:select', function (e) {
+					data = e.params.data
+					enableForm([
+						'#input_terapis'
+					])
+				})
+
+				function getServiceDuration(service_id) {
+					$('#input_durasi').select2({
+						placeholder: "Pilih Durasi",
+						ajax: {
+							url: "<?= base_url('api/getAvailableServices') ?>/" + service_id + "/duration",
+							dataType: "json",
+							processResults: function (data) {
+								return {
+									results: data.results
+								}
 							}
 						}
-					}
-				})
-			}
+					})
+				}
 
-			//End duration service form logic
+				//End duration service form logic
 
-			// Therapis form logic
+				// Therapis form logic
 
-			$('#input_terapis').select2({
-				placeholder: "Pilih Therapis"
-			})
-
-			$('#input_terapis').on('select2:open', function (e) {
-				disableForm([
-					'#input_tanggal',
-					'#input_jam',
-					'#input_kamar',
-					'.kamarInput',
-					'.next-btn'
-				])
-			})
-
-			$('#input_terapis').on('select2:select', function (e) {
-				data = e.params.data
-				enableForm([
-					'#input_tanggal'
-				])
-				$.ajax({
-					url: "<?= base_url('api/getDisabledDate?therapis_id=') ?>" + data.id,
-					dataType: "json",
-					method: "GET",
-					data: {
-						service_id: $('#input_service').val(),
-						duration: $('#input_durasi').val(),
-						terapis_id: $('#input_terapis').val()
-					},
-					success: function (data) {
-						$date.destroy()
-						getDisabledDate(data)
-					}
-
-				})
-			})
-
-			function getTherapis(service_id) {
 				$('#input_terapis').select2({
-					placeholder: "Pilih Therapis",
-					ajax: {
-						url: "<?= base_url('api/getAvailableTherapis') ?>?service_id=" + service_id,
+					placeholder: "Pilih Therapis"
+				})
+
+				$('#input_terapis').on('select2:open', function (e) {
+					disableForm([
+						'#input_tanggal',
+						'#input_jam',
+						'#input_kamar',
+						'.kamarInput',
+						'.next-btn'
+					])
+				})
+
+				$('#input_terapis').on('select2:select', function (e) {
+					data = e.params.data
+					enableForm([
+						'#input_tanggal'
+					])
+					$.ajax({
+						url: "<?= base_url('api/getDisabledDate?therapis_id=') ?>" + data.id,
 						dataType: "json",
-						processResults: function (data) {
-							return {
-								results: data.results
+						method: "GET",
+						data: {
+							service_id: $('#input_service').val(),
+							duration: $('#input_durasi').val(),
+							terapis_id: $('#input_terapis').val()
+						},
+						success: function (data) {
+							$date.destroy()
+							getDisabledDate(data)
+						}
+
+					})
+				})
+
+				function getTherapis(service_id) {
+					$('#input_terapis').select2({
+						placeholder: "Pilih Therapis",
+						ajax: {
+							url: "<?= base_url('api/getAvailableTherapis') ?>?service_id=" + service_id,
+							dataType: "json",
+							processResults: function (data) {
+								return {
+									results: data.results
+								}
 							}
 						}
-					}
-				})
-			}
+					})
+				}
 
-			//End therapis form logic
+				//End therapis form logic
 
-			//Date form logic
+				//Date form logic
 
-			var $date = $('#input_tanggal').datepicker({
-				uiLibrary: 'bootstrap',
-				showOtherMonths: true,
-				value: formatDate(),
-				format: 'dd/mm/yyyy',
-				minDate: formatDate()
-			})
-
-			function getDisabledDate(data) {
-				$('#input_tanggal').datepicker({
+				var $date = $('#input_tanggal').datepicker({
 					uiLibrary: 'bootstrap',
 					showOtherMonths: true,
 					value: formatDate(),
-					format: 'dd-mmm-yyyy',
-					minDate: formatDate(),
-					disableDates: data,
-					open: function (e) {
-						disableForm([
-							'#input_jam',
-							'#input_kamar',
-							'.kamarInput',
-							'.next-btn'
-						])
-					},
-					close: function (e) {
-						enableForm([
-							'#input_jam'
-						])
-					},
-					select: function (e) {
-						enableForm([
-							'#input_jam'
-						])
-						getAvailableTime()
-					}
+					format: 'dd/mm/yyyy',
+					minDate: formatDate()
 				})
-			}
 
-			//End date form logic
+				function getDisabledDate(data) {
+					$('#input_tanggal').datepicker({
+						uiLibrary: 'bootstrap',
+						showOtherMonths: true,
+						value: formatDate(),
+						format: 'dd-mmm-yyyy',
+						minDate: formatDate(),
+						disableDates: data,
+						open: function (e) {
+							disableForm([
+								'#input_jam',
+								'#input_kamar',
+								'.kamarInput',
+								'.next-btn'
+							])
+						},
+						close: function (e) {
+							enableForm([
+								'#input_jam'
+							])
+						},
+						select: function (e) {
+							enableForm([
+								'#input_jam'
+							])
+							getAvailableTime()
+						}
+					})
+				}
 
-			//Time form logic
+				//End date form logic
 
-			$('#input_jam').select2({
-				placeholder: "Pilih Jam"
-			})
+				//Time form logic
 
-			function getAvailableTime() {
-				service = $('#input_service').val()
-				duration = $('#input_durasi').val()
-				therapis = $('#input_terapis').val()
-				date = $('#input_tanggal').val()
-				url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date
 				$('#input_jam').select2({
-					placeholder: "Pilih Jam Booking",
-					ajax: {
-						url: url,
-						dataType: "json",
-						processResults: function (data) {
-							return data
+					placeholder: "Pilih Jam"
+				})
+
+				function getAvailableTime() {
+					service = $('#input_service').val()
+					duration = $('#input_durasi').val()
+					therapis = $('#input_terapis').val()
+					date = $('#input_tanggal').val()
+					url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date
+					$('#input_jam').select2({
+						placeholder: "Pilih Jam Booking",
+						ajax: {
+							url: url,
+							dataType: "json",
+							cache: false,
+							processResults: function (data) {
+								if (data.therapis) {
+									document.querySelector('#input_terapis')[0].value = data.therapis
+									return data.data
+								}
+								return data
+							}
+						}
+					})
+				}
+
+				$('#input_jam').on('select2:open', function (e) {
+					disableForm([
+						'#input_kamar',
+						'.kamarInput',
+						'.next-btn'
+					])
+				})
+
+				$('#input_jam').on('select2:select', function (e) {
+					data = e.params.data
+					service = $('#input_service').val()
+					duration = $('#input_durasi').val()
+					therapis = $('#input_terapis').val()
+					date = $('#input_tanggal').val()
+					$.ajax({
+						url: "<?= base_url('api/getAvailableRooms'); ?>",
+						dataType: 'json',
+						method: 'GET',
+						data: {
+							service_id: service,
+							duration: duration,
+							therapis_id: therapis,
+							date: date,
+							time: data.id
+						},
+						success: function (result) {
+							showAvailableRooms(result.results)
+						}
+					})
+				})
+
+				//End time form logic
+
+				//Rooms form logic
+
+				function showAvailableRooms(datas) {
+					datas.forEach(function (data) {
+						if ($.find('#kamar_' + data.id)) {
+							$('#kamar_' + data.id).removeClass('selected disabled')
+						}
+					})
+				}
+
+				//End rooms form logic
+
+				$('.jamInput').on('click', function () {
+					var selection = $('.jamInput')
+					var value = $(this).data('value')
+					for (var i = 0; i < selection.length; i++) {
+						if ($(selection[i]).hasClass('selected')) {
+							$(selection[i]).removeClass('selected')
 						}
 					}
-				})
-			}
-
-			$('#input_jam').on('select2:open', function (e) {
-				disableForm([
-					'#input_kamar',
-					'.kamarInput',
-					'.next-btn'
-				])
-			})
-
-			$('#input_jam').on('select2:select', function (e) {
-				data = e.params.data
-				service = $('#input_service').val()
-				duration = $('#input_durasi').val()
-				therapis = $('#input_terapis').val()
-				date = $('#input_tanggal').val()
-				$.ajax({
-					url: "<?= base_url('api/getAvailableRooms'); ?>",
-					dataType: 'json',
-					method: 'GET',
-					data: {
-						service_id: service,
-						duration: duration,
-						therapis_id: therapis,
-						date: date,
-						time: data.id
-					},
-					success: function (result) {
-						showAvailableRooms(result.results)
+					if (!$(this).hasClass('disabled')) {
+						$(this).addClass('selected')
+						$('#input_jam').val(value)
 					}
 				})
-			})
 
-			//End time form logic
-
-			//Rooms form logic
-
-			function showAvailableRooms(datas) {
-				datas.forEach(function (data) {
-					if ($.find('#kamar_' + data.id)) {
-						$('#kamar_' + data.id).removeClass('selected disabled')
-					}
-				})
-			}
-
-			//End rooms form logic
-
-			$('.jamInput').on('click', function () {
-				var selection = $('.jamInput')
-				var value = $(this).data('value')
-				for (var i = 0; i < selection.length; i++) {
-					if ($(selection[i]).hasClass('selected')) {
-						$(selection[i]).removeClass('selected')
-					}
-				}
-				if (!$(this).hasClass('disabled')) {
-					$(this).addClass('selected')
-					$('#input_jam').val(value)
-				}
-			})
-
-			$('.kamarInput').on('click', function () {
-				var selection = $('.kamarInput')
-				var value = $(this).data('value')
-				for (var i = 0; i < selection.length; i++) {
-					if ($(selection[i]).hasClass('selected')) {
-						$(selection[i]).removeClass('selected')
-					}
-				}
-				if (!$(this).hasClass('disabled')) {
-					$(this).addClass('selected')
-					$('#input_kamar').removeAttr('disabled')
-					$('#input_kamar').val(value)
-				}
-				enableForm([
-					'.next-btn'
-				])
-			})
-
-			function getTotal(form) {
-				$.ajax({
-					url: "<?= base_url('api/getTotalValue');?>",
-					method: "GET",
-					data: form,
-					success: function (data) {
-						$('#o_service').text(data.service_name)
-						$('#o_terapis').text(data.therapis_name)
-						$('#o_kamar').text(data.room_name)
-						$('#o_tanggal').text(data.date)
-						$('#o_jam').text(data.time)
-						$('#o_durasi').text(data.duration + ' menit')
-						$('#o_value').text('Rp. ' + data.total_price)
-						$('#nextForm').modal('show')
-					}
-				})
-			}
-
-			function checkOut(form) {
-				$.ajax({
-					url: "<?= base_url('api/checkOutService')?>",
-					method: 'post',
-					dataType: 'json',
-					data: form,
-					success: function (data) {
-						if (data.status) {
-							window.location.href = "<?= base_url('booking/invoice/')?>" + data.invoice
+				$('.kamarInput').on('click', function () {
+					var selection = $('.kamarInput')
+					var value = $(this).data('value')
+					for (var i = 0; i < selection.length; i++) {
+						if ($(selection[i]).hasClass('selected')) {
+							$(selection[i]).removeClass('selected')
 						}
 					}
-				})
-			}
-
-			function enableForm(targets) {
-				targets.forEach(function (el) {
-					if ($(el).length == 1 && el != '.next-btn'){
-						$(el).removeAttr('disabled')
-					} else {
-						$(el).removeClass('selected')
-						$(el).removeClass('disabled')
+					if (!$(this).hasClass('disabled')) {
+						$(this).addClass('selected')
+						$('#input_kamar').removeAttr('disabled')
+						$('#input_kamar').val(value)
 					}
+					enableForm([
+						'.next-btn'
+					])
 				})
-			}
 
-			function disableForm(targets) {
-				targets.forEach(function (el) {
-					if ($(el).length == 1 && el != '.next-btn'){
-						$(el).attr('disabled', true)
-					} else {
-						$(el).removeClass('selected')
-						$(el).addClass('disabled')
-					}
-				})
-			}
-		});
+				function getTotal(form) {
+					$.ajax({
+						url: "<?= base_url('api/getTotalValue');?>",
+						method: "GET",
+						data: form,
+						success: function (data) {
+							$('#o_service').text(data.service_name)
+							$('#o_terapis').text(data.therapis_name)
+							$('#o_kamar').text(data.room_name)
+							$('#o_tanggal').text(data.date)
+							$('#o_jam').text(data.time)
+							$('#o_durasi').text(data.duration + ' menit')
+							$('#o_value').text('Rp. ' + data.total_price)
+							$('#nextForm').modal('show')
+						}
+					})
+				}
+
+				function checkOut(form) {
+					$.ajax({
+						url: "<?= base_url('api/checkOutService')?>",
+						method: 'post',
+						dataType: 'json',
+						data: form,
+						success: function (data) {
+							if (data.status) {
+								window.location.href = "<?= base_url('booking/invoice/')?>" + data.invoice
+							}
+						}
+					})
+				}
+
+				function enableForm(targets) {
+					targets.forEach(function (el) {
+						if ($(el).length == 1 && el != '.next-btn'){
+							$(el).removeAttr('disabled')
+						} else {
+							$(el).removeClass('selected')
+							$(el).removeClass('disabled')
+						}
+					})
+				}
+
+				function disableForm(targets) {
+					targets.forEach(function (el) {
+						if ($(el).length == 1 && el != '.next-btn'){
+							$(el).attr('disabled', true)
+						} else {
+							$(el).removeClass('selected')
+							$(el).addClass('disabled')
+						}
+					})
+				}
+			});
 		</script>
 	</body>
 </html>

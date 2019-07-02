@@ -4,7 +4,7 @@
  * Website=> https=>//tioagustian.me
  *
  * Copyright (c) 2019 Tio Agustian
- * Released under the MIT license
+ * 
  */
 
 header('Content-Type: application/json');
@@ -85,21 +85,47 @@ class Api extends MX_Controller
 
         $query = "SELECT
                     workers.id,
-                    workers.name AS text
+                    workers.name,
+                    workers.gender
                 FROM worker_services
                     INNER JOIN workers
                     ON worker_services.worker_id = workers.id
                 WHERE worker_services.service_id = $service";
 
-        $result = $this->db->query($query)->result();
+        $get = $this->db->query($query)->result();
 
-        if (count($result) <= 0) {
+        $results = [];
+
+        $results[0] = ['id' => 1000, 'text' => 'Laki-laki (acak)', 'disabled' => true];
+        $results[1] = ['id' => 1001, 'text' => 'Perempuan (acak)', 'disabled' => true];
+        $results[2]['text'] = 'Laki-laki';
+        $results[2]['children'] = [];
+        $results[3]['text'] = 'Perempuan';
+        $results[4]['children'] = [];
+
+        foreach ($get as $result) {
+            switch ($result->gender) {
+                case 'P':
+                    $results[1] = ['id' => 1001, 'text' => 'Perempuan (acak)'];
+                    $results[3]['text'] = 'Perempuan';
+                    $results[3]['children'][] = ['id' => $result->id, 'text' => $result->name];
+                    break;
+                
+                default:
+                    $results[0] = ['id' => 1000, 'text' => 'Laki-laki (acak)'];
+                    $results[2]['text'] = 'Laki-laki';
+                    $results[2]['children'][] = ['id' => $result->id, 'text' => $result->name];
+                    break;
+            }
+        }
+
+        if (count($get) <= 0) {
             $data = [
                 "status" => false,
                 "service_id" => $service,
                 "service_name" => $getService->name,
                 "message" => "sorry, we can't find any worker for this services_id",
-                "length" => count($result),
+                "length" => count($results),
                 "results" => null
             ];
             echo json_encode($data, JSON_PRETTY_PRINT);
@@ -110,8 +136,8 @@ class Api extends MX_Controller
             "status" => true,
             "service_id" => $service,
             "service_name" => $getService->name,
-            "length" => count($result),
-            "results" => $result
+            "length" => count($results),
+            "results" => $results
         ];
         echo json_encode($data, JSON_PRETTY_PRINT);
     }
@@ -163,8 +189,6 @@ class Api extends MX_Controller
             $booked[$dt['room_id']][$dt['time']] = $dt['duration'];
             $onService[$dt['worker_id']] = [1 => strtotime($now . ' ' . $dt['time']), 2 => strtotime($now . ' ' . $dt['time']) + ($dt['duration'] * 60)];
         }
-
-        // die(json_encode($onService, JSON_PRETTY_PRINT));
         
         foreach ($rooms as $key => $value) {
             if (isset($booked[$key])) {
@@ -174,13 +198,16 @@ class Api extends MX_Controller
             }
         }
 
+        if ($therapis_id > 999) {
+            return $this->randomizeT($open, $data, $duration, $cooldown, $close, $onService, $service_id, $therapis_id);
+        }
+
         foreach ($data as $room => $times) {
             $startTime = $open;
             $timeIndex = 1;
             $endIndex = count($times);
 
             if ($endIndex == 0) {
-                // echo "if zero $endIndex, $room\n";
                 $this->timeLoop($duration, $cooldown, $startTime, $close, $room, $onService, $therapis_id);
             }
             foreach ($times as $time => $dr) {
@@ -189,12 +216,10 @@ class Api extends MX_Controller
                 $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
 
                 if ($timeIndex == $endIndex) {
-                    // echo "if end $endIndex, $room\n";
                     $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
                     $startTime = $open;
                     $timeIndex = 0;
                 } else {
-                    // echo "if $endIndex, $room\n";
                     $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
                     $startTime = $endBook;
                     $timeIndex ++;
@@ -256,6 +281,10 @@ class Api extends MX_Controller
                 $data[$key] = [];
             }
         }
+
+        // if ($therapis_id > 999) {
+        //     return $this->randomizeR($open, $data, $duration, $cooldown, $close, $onService, $service_id, $therapis_id);
+        // }
 
         foreach ($data as $room => $times) {
             $startTime = $open;
@@ -327,6 +356,124 @@ class Api extends MX_Controller
         }
     }
 
+    private function randomizeT($open, $data, $duration, $cooldown, $close, $onService, $id, $therapis_id)
+    {
+
+        $genders = [];
+
+        $query = "SELECT
+                      workers.id,
+                      workers.name,
+                      workers.gender
+                    FROM worker_services
+                      INNER JOIN workers
+                        ON worker_services.worker_id = workers.id
+                    WHERE worker_services.service_id = '$id'
+                    AND workers.gender = 'P'";
+
+        if ($therapis_id == 1000) {
+            $query = "SELECT
+                      workers.id,
+                      workers.name,
+                      workers.gender
+                    FROM worker_services
+                      INNER JOIN workers
+                        ON worker_services.worker_id = workers.id
+                    WHERE worker_services.service_id = '$id'
+                    AND workers.gender = 'L'";
+        }
+
+        $therapis = $this->db->query($query)->result();
+        $now = date('Y/m/d', strtotime('now'));
+        $dayStart = strtotime($now . ' 00:00:00');
+
+        $output = [];
+
+        foreach ($data as $room => $times) {
+            $startTime = $open;
+            $timeIndex = 1;
+            $endIndex = count($times);
+            if (isset($_GET['time'])) {
+                $Time = addslashes($_GET['time']);
+                $targetTime = strtotime($now . ' ' . $Time);
+                foreach ($therapis as $t) {
+                    $output['therapis'][] = $t->id;
+                    if ($endIndex == 0) {
+                        $this->singleTime($duration, $cooldown, $targetTime, $close, $room, $onService, $t->id);
+                    }
+                    foreach ($times as $time => $dr) {
+
+                        $bookedTime = strtotime($now . ' ' . $time);
+                        $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
+
+                        if ($timeIndex == $endIndex) {
+                            $this->singleTime($duration, $cooldown, $targetTime, $bookedTime, $room, $onService, $t->id);
+                            $startTime = $open;
+                            $timeIndex = 0;
+                        } else {
+                            $this->singleTime($duration, $cooldown, $targetTime, $bookedTime, $room, $onService, $t->id);
+                            $startTime = $endBook;
+                            $timeIndex ++;
+                        }
+                    }
+                }
+            } else {
+                foreach ($therapis as $t) {
+                    $output['therapis'][] = $t->id;
+                    if ($endIndex == 0) {
+                        $this->timeLoop($duration, $cooldown, $startTime, $close, $room, $onService, $t->id);
+                    }
+                    foreach ($times as $time => $dr) {
+
+                        $bookedTime = strtotime($now . ' ' . $time);
+                        $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
+
+                        if ($timeIndex == $endIndex) {
+                            $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $t->id);
+                            $startTime = $open;
+                            $timeIndex = 0;
+                        } else {
+                            $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $t->id);
+                            $startTime = $endBook;
+                            $timeIndex ++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $arr = array_rand($output['therapis']);
+        $output['therapis'] = $output['therapis'][$arr];
+        sort($this->timeResult);
+
+        foreach ($this->timeResult as $value) {
+            $output['data']['results'][] = ['id' => $value, 'text' => $value];
+        }
+
+        echo json_encode($output , JSON_PRETTY_PRINT);
+    }
+
+    private function singleTime($d, $cd, $ft, $lt, $r, $s, $t)
+    {
+        $target = ($d * 60) + $cd + $ft;
+        if ($target < $lt) {
+            $inService = false;
+
+            if (isset($s[$t])) {
+                $inService = true;
+            }
+
+            if ($inService && ($target >= $s[$t][1] && $target <= ($s[$t][2] + $cd))) {
+                $this->singleTime($d, $cd, ($s[$t][2] + $cd), $lt, $r, $s, $t);
+            } else {
+                if (!in_array(date('H:i', $ft), $this->timeResult)) {
+                    $this->timeResult[] = date('H:i', $ft);
+                    $this->singleTime($d, $cd, $target, $lt, $r, $s, $t);
+                }
+            }
+        }
+    }
+
     private function timeLoop($d, $cd, $ft, $lt, $r, $s, $t)
     {
         $target = ($d * 60) + $cd + $ft;
@@ -334,7 +481,6 @@ class Api extends MX_Controller
             $inService = false;
             if (isset($s[$t])) {
                 $inService = true;
-                // echo "$d $inService, $target >=".$s[$t][1]." && $target <= ".$s[$t][2]. " = ".($target >= $s[$t][1] && $target <= $s[$t][2])."\n";
             }
             if ($inService && ($target >= $s[$t][1] && $target <= ($s[$t][2] + $cd))) {
                 $this->timeLoop($d, $cd, ($s[$t][2] + $cd), $lt, $r, $s, $t);
@@ -399,7 +545,7 @@ class Api extends MX_Controller
         $result = $this->order->insertServiceOrder($service_id, $duration, $therapis_id, $date, $time, $room_id, $name, $phone, $email);
 
         if ($result) {
-            echo json_encode(['status' => true, 'invoice' => $result->voucher_number], JSON_PRETTY_PRINT);
+            echo json_encode(['status' => true, 'invoice' => $result->invoice_number], JSON_PRETTY_PRINT);
             return;
         }
 

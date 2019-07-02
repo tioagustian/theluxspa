@@ -99,10 +99,10 @@ class Payment extends MX_Controller {
     {
     	$trx_id = $this->input->post('transaction_id');
     	if (isset($trx_id)) {
-    		$this->db->where('voucher_number', $id);
-			$this->db->update('invoices', ['transaction_id' => $trx_id]);
+    		$this->db->where('invoice_number', $id);
+			$this->db->update('transactions', ['transaction_id' => $trx_id]);
     	}
-    	var_dump([$trx_id, $this->db->last_query()]);
+    	log_message('debug',json_encode([$trx_id, $this->db->last_query()]));
     }
 
     public function finish(){
@@ -119,11 +119,14 @@ class Payment extends MX_Controller {
 
 		if(!is_null($result)){
 			// $notif = $this->veritrans->status($result->order_id);
-			$invoice = $this->db->get_where('invoices', ['voucher_number' => $result->order_id])->row();
+			$invoice = $this->db->get_where('transactions', ['invoice_number' => $result->order_id])->row();
 			if ($invoice->transaction_id != $result->transaction_id) {
-				log_message('error', 'transaction_id not match');
+				log_message('error', $invoice->transaction_id.' |'.$result->transaction_id);
 				return;
 			}
+			log_message('debug', $this->db->last_query());
+			log_message('debug', json_encode($invoice));
+			log_message('error', $invoice->transaction_id.' |'.$result->transaction_id);
 			$status_code = $result->status_code;
 			$inv['status'] = 'pending';
 			$srv['status'] = 'pending_payment';
@@ -145,18 +148,18 @@ class Payment extends MX_Controller {
 					break;
 			}
 
-			$this->db->where('voucher_number', $result->order_id);
-			$this->db->update('invoices', $inv);
-			log_message('info','invoice update: ' . $this->db->last_query());
+			$this->db->where('invoice_number', $result->order_id);
+			$this->db->update('transactions', $inv);
+			log_message('debug','invoice update: ' . $this->db->last_query());
 
 			$query = "SELECT
 					  service_order_detail.id
 					FROM service_orders
-					  INNER JOIN invoices
-					    ON service_orders.invoice_id = invoices.id
+					  INNER JOIN transactions
+					    ON service_orders.invoice_id = transactions.id
 					  INNER JOIN service_order_detail
 					    ON service_order_detail.order_id = service_orders.id
-					WHERE invoices.voucher_number = '$result->order_id'";
+					WHERE transactions.invoice_number = '$result->order_id'";
 
 			$sOrd = $this->db->query($query)->row();
 			log_message('debug','get order: ' . $this->db->last_query());
