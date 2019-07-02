@@ -6,6 +6,15 @@
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         background-color: #fff;
     }
+
+    .time-box {
+        text-align: center;
+        padding: 3px;
+        border: 1px solid grey;
+        margin-left: 15px;
+        border-radius: 4px
+    }
+
 </style>
 <div class="row">
     <div class="col-sm-8">
@@ -42,6 +51,12 @@
                             <div class="form-group">
                                 <label class="control-label">Jam</label>
                                 <input type="text" class="form-control" id="input_jam" name="input_jam" disabled />
+                                <button class="btn btn-primary" id="input_jam_b">Cari</button>
+                                <small>Pilihan</small>
+                                <div class="suggestion">
+                                    <div class="row">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -318,7 +333,7 @@
                     terapis_id: $('#input_terapis').val()
                 },
                 success: function (data) {
-                    $date.destroy()
+                    // $date.destroy()
                     // getDisabledDate(data)
                 }
 
@@ -390,32 +405,58 @@
         //     placeholder: "Pilih Jam"
         // })
 
-        $('#input_jam').timepicker({
+        var timepicker = $('#input_jam').timepicker({
             mode: "24hr",
-            modal: true
+            modal: true,
+            select: function (e, type){
+                enableForm([
+                    '#input_kamar',
+                    '.kamarInput',
+                    '.next-btn'
+                ])
+            }
         })
 
-        function getAvailableTime() {
+        $('#input_jam_b').on('click', function(e){
+            e.preventDefault()
+            getAvailableTime(document.getElementById('input_jam'))
+        })
+
+        function getAvailableTime(elm = '') {
             service = $('#input_service').val()
             duration = $('#input_durasi').val()
             therapis = $('#input_terapis').val()
             date = $('#input_tanggal').val()
-            url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date
-            // $('#input_jam').select2({
-            //     placeholder: "Pilih Jam Booking",
-            //     ajax: {
-            //         url: url,
-            //         dataType: "json",
-            //         cache: false,
-            //         processResults: function (data) {
-            //             if (data.therapis) {
-            //                 document.querySelector('#input_terapis')[0].value = data.therapis
-            //                 return data.data
-            //             }
-            //             return data
-            //         }
-            //     }
-            // })
+            time = elm.value
+            url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date + "&time=" + time
+            console.log(timepicker.value())
+            $.ajax({
+                url: url,
+                method: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.therapis) {
+                        document.querySelector('#input_terapis')[0].value = data.therapis
+                        result = data.data.results
+                    } else {
+                        if (data.results) {
+                            result = data.results
+                        } else {
+                            result = {}
+                        }
+                    }
+                    $('.suggestion').html()
+                    var el = '<div class="row">'
+                    for (var i = 0; i < result.length; i++) {
+                        var t = result[i]
+                        el += '<div class="col-sm-3 time-box" id="tb_'+ i +'">'
+                        el += '<span>' + t.text + '</span>'
+                        el += '</div>'
+                    }
+                    el += '</div>'
+                    $('.suggestion').html(el)
+                }
+            })
         }
 
         $('#input_jam').on('select2:open', function (e) {

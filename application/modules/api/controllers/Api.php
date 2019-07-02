@@ -361,16 +361,6 @@ class Api extends MX_Controller
 
         $genders = [];
 
-        $query = "SELECT
-                      workers.id,
-                      workers.name,
-                      workers.gender
-                    FROM worker_services
-                      INNER JOIN workers
-                        ON worker_services.worker_id = workers.id
-                    WHERE worker_services.service_id = '$id'
-                    AND workers.gender = 'P'";
-
         if ($therapis_id == 1000) {
             $query = "SELECT
                       workers.id,
@@ -381,21 +371,30 @@ class Api extends MX_Controller
                         ON worker_services.worker_id = workers.id
                     WHERE worker_services.service_id = '$id'
                     AND workers.gender = 'L'";
+        } else {
+            $query = "SELECT
+                      workers.id,
+                      workers.name,
+                      workers.gender
+                    FROM worker_services
+                      INNER JOIN workers
+                        ON worker_services.worker_id = workers.id
+                    WHERE worker_services.service_id = '$id'
+                    AND workers.gender = 'P'";
         }
 
         $therapis = $this->db->query($query)->result();
-        $now = date('Y/m/d', strtotime('now'));
+        $date = (isset($_GET['date'])) ? addslashes($_GET['date']) : 'now';
+        $now = date('Y/m/d', strtotime($date));
         $dayStart = strtotime($now . ' 00:00:00');
-
         $output = [];
-
         foreach ($data as $room => $times) {
             $startTime = $open;
             $timeIndex = 1;
             $endIndex = count($times);
             if (isset($_GET['time'])) {
-                $Time = addslashes($_GET['time']);
-                $targetTime = strtotime($now . ' ' . $Time);
+                $tt = addslashes($_GET['time']);
+                $targetTime = strtotime($now . ' ' . $tt);
                 foreach ($therapis as $t) {
                     $output['therapis'][] = $t->id;
                     if ($endIndex == 0) {
@@ -415,7 +414,7 @@ class Api extends MX_Controller
                             $startTime = $endBook;
                             $timeIndex ++;
                         }
-                    }
+                    } 
                 }
             } else {
                 foreach ($therapis as $t) {
