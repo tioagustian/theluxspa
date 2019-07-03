@@ -207,22 +207,49 @@ class Api extends MX_Controller
             $timeIndex = 1;
             $endIndex = count($times);
 
-            if ($endIndex == 0) {
-                $this->timeLoop($duration, $cooldown, $startTime, $close, $room, $onService, $therapis_id);
-            }
-            foreach ($times as $time => $dr) {
+            if (isset($_GET['time'])) {
+                $tt = addslashes($_GET['time']);
+                $targetTime = strtotime($now . ' ' . $tt);
+                
+                $output['therapis'][] = $therapis_id;
+                if ($endIndex == 0) {
+                    $this->singleTime($duration, $cooldown, $targetTime, $close, $room, $onService, $therapis_id);
+                }
+                foreach ($times as $time => $dr) {
 
-                $bookedTime = strtotime($now . ' ' . $time);
-                $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
+                    $bookedTime = strtotime($now . ' ' . $time);
+                    $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
 
-                if ($timeIndex == $endIndex) {
-                    $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
-                    $startTime = $open;
-                    $timeIndex = 0;
-                } else {
-                    $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
-                    $startTime = $endBook;
-                    $timeIndex ++;
+                    if ($timeIndex == $endIndex) {
+                        $this->singleTime($duration, $cooldown, $targetTime, $bookedTime, $room, $onService, $therapis_id);
+                        $startTime = $open;
+                        $timeIndex = 0;
+                    } else {
+                        $this->singleTime($duration, $cooldown, $targetTime, $bookedTime, $room, $onService, $therapis_id);
+                        $startTime = $endBook;
+                        $timeIndex ++;
+                    }
+                } 
+            
+            } else {
+                $output['therapis'][] = $therapis_id;
+                if ($endIndex == 0) {
+                    $this->timeLoop($duration, $cooldown, $startTime, $close, $room, $onService, $therapis_id);
+                }
+                foreach ($times as $time => $dr) {
+
+                    $bookedTime = strtotime($now . ' ' . $time);
+                    $endBook = strtotime($now . ' ' . $time) + ($dr * 60) + $cooldown;
+
+                    if ($timeIndex == $endIndex) {
+                        $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
+                        $startTime = $open;
+                        $timeIndex = 0;
+                    } else {
+                        $this->timeLoop($duration, $cooldown, $startTime, $bookedTime, $room, $onService, $therapis_id);
+                        $startTime = $endBook;
+                        $timeIndex ++;
+                    }
                 }
             }
         }
@@ -282,12 +309,8 @@ class Api extends MX_Controller
             }
         }
 
-        // if ($therapis_id > 999) {
-        //     return $this->randomizeR($open, $data, $duration, $cooldown, $close, $onService, $service_id, $therapis_id);
-        // }
-
         foreach ($data as $room => $times) {
-            $startTime = $open;
+            $startTime = strtotime($now . ' ' . $time_selected);
             $timeIndex = 1;
             $endIndex = count($times);
 
@@ -490,6 +513,20 @@ class Api extends MX_Controller
                 }
             }
         }
+    }
+
+    public function getPrice()
+    {
+        $service_id = (isset($_GET['service_id'])) ? addslashes($_GET['service_id']) : false;
+        $duration = (isset($_GET['duration'])) ? addslashes(getDurationValue($_GET['duration'])) : false;
+        $service = $this->db->get_where('services', ['id' => $service_id])->row_array();
+        $total = round(($service['price'] / 15) * $duration, -2);
+
+        $data = [
+            'total' => $total
+        ];
+
+        echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
     public function getTotalValue()

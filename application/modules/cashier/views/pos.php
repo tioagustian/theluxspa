@@ -12,21 +12,48 @@
         padding: 3px;
         border: 1px solid grey;
         margin-left: 15px;
-        border-radius: 4px
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .time-box.selected, .kamarInput.selected {
+        background-color: #ddd;
+    }
+
+    .kamarInput {
+        border: 1px solid rgb(170, 170, 170);
+        border-radius: 4px;
+        color: rgb(33, 37, 41);
+        display: flex;
+        justify-content: center;
+        min-width: 100px;
+        max-width: 100px;
+        padding: 5px;
+        margin-right: 3px;
+        margin-bottom: 3px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .disabled {
+        background-color: rgb(233,236,239);
+        cursor: not-allowed !important;
+        pointer-events: none !important;
     }
 
 </style>
-<div class="row">
-    <div class="col-sm-8">
-        <div class="card">
-            <div class="card-header">
-                <h5>Layanan</h5>
-                <span></span>
-            </div>
-            <div class="card-block">
-                <form class="form-primary">
+<form class="form-material" id="order_form">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-block">
+                    
                     <div class="row">
                         <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Nama</label>
+                                <input type="text" name="name" id="name" class="form-control">
+                            </div>
                             <div class="form-group">
                                 <label class="control-label">
                                     Layanan
@@ -51,129 +78,58 @@
                             <div class="form-group">
                                 <label class="control-label">Jam</label>
                                 <input type="text" class="form-control" id="input_jam" name="input_jam" disabled />
-                                <button class="btn btn-primary" id="input_jam_b">Cari</button>
+                                <div class="mt-2 ml-1">
+                                    <button class="btn btn-primary float-right" id="input_jam_b">Cari</button>
+                                </div>
                                 <small>Pilihan</small>
                                 <div class="suggestion">
                                     <div class="row">
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="nextForm" tabindex="-1" role="dialog" aria-labelledby="title" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="title">Konfirmasi</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>Rincian</h5>
-                                <div class="form-group">
-                                    <label class="control-label">Name</label>
-                                    <div class="inputGroupContainer">
-                                       <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="max-width: 100%;"><i class="fa fa-user"></i></span>
-                                            </div>
-                                            <input type="text" name="name" class="form-control" id="name" placeholder="Nama Lengkap" required>
-                                            <div class="invalid-feedback">Nama harus diisi</div>
-                                       </div>
+                            <div class="form-group">
+                                <label class="control-label">Kamar</label>
+                                <input type="hidden" name="input_kamar" id="input_kamar">
+                                <div class="row ml-0 mr-0">
+                                    <?php foreach ($rooms as $room) { ?>
+                                    <div class="col kamarInput disabled" id="kamar_<?= $room['id'] ?>" data-value="<?= $room['id'] ?>">
+                                        <span><?= $room['name'] ?></span>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Nomor Handphone</label>
-                                    <div class="inputGroupContainer">
-                                       <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="max-width: 100%;"><i class="fa fa-phone"></i></span>
-                                            </div>
-                                            <input type="text" name="phone" class="form-control" id="phone" placeholder="Nomor Handphone" required>
-                                            <div class="invalid-feedback">Nomor telepon tidak valid</div>
-                                       </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">Email</label>
-                                    <div class="inputGroupContainer">
-                                       <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="max-width: 100%;"><i class="fa fa-at"></i></span>
-                                            </div>
-                                            <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
-                                            <div class="invalid-feedback">Email tidak valid</div>
-                                       </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h5>Rincian Pesanan</h5>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="o-list">
-                                            <label class="control-label">Layanan</label>
-                                            <div class="o-list-item" id="o_service">A</div>
-                                        </div>
-                                        <div class="o-list">
-                                            <label class="control-label">Terapis</label>
-                                            <div class="o-list-item" id="o_terapis">B</div>
-                                        </div>
-                                        <div class="o-list">
-                                            <label class="control-label">Tanggal</label>
-                                            <div class="o-list-item" id="o_tanggal">A</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="o-list">
-                                            <label class="control-label">Jam</label>
-                                            <div class="o-list-item" id="o_jam">B</div>
-                                        </div>
-                                        <div class="o-list">
-                                            <label class="control-label">Durasi</label>
-                                            <div class="o-list-item" id="o_durasi">A</div>
-                                        </div>
-                                        <div class="o-list">
-                                            <label class="control-label">Kamar</label>
-                                            <div class="o-list-item" id="o_kamar">B</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o-total float-right">
-                                    <label>Total:</label>
-                                    <div class="o-value" id="o_value">Rp. 0</div>
+                                <?php } ?>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batalkan</button>
-                    <button type="submit" class="btn btn-primary" id="checkout">Checkout</button>
+                
                 </div>
             </div>
         </div>
-    </div>
     <div class="col-sm-4">
         <div class="card">
-            <div class="card-header">
-                <h5>Rincian</h5>
-                <span></span>
-            </div>
             <div class="card-block">
-                
+                <div class="form-group">
+                    <label class="control-label">Detail</label>
+                    <input type="text" name="detail" id="detail" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Harga</label>
+                    <input type="text" class="form-control text-right" name="total_price" id="total_price" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Bayar</label>
+                    <input type="text" class="form-control text-right" name="pay" id="pay">
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kembali</label>
+                    <input type="text" class="form-control text-right" name="change" id="change">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary float-right" id="proccess">Proses</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
 <script type="text/javascript">
 
     function formatDate(today = new Date(), format = 'dd-mmm-yyyy') {
@@ -231,9 +187,14 @@
             }
         })
 
-        $("#checkout").on('click', function (e) {
+        $('#input_jam_b').on('click', function(e){
             e.preventDefault()
-            checkOut($('#order_form').serialize())
+            getAvailableTime(document.getElementById('input_jam'))
+        })
+
+        $("#proccess").on('click', function (e) {
+            e.preventDefault()
+            console.log($('#order_form').serialize())
         })
 
         //Service form logic
@@ -249,6 +210,9 @@
         $('#input_service').on('select2:open', function (e) {
             $('#input_durasi').val(null).trigger('change')
             $('#input_terapis').val(null).trigger('change')
+            $('#pay').val(null)
+            $('#change').val(null)
+            $('#total_price').val(null)
             disableForm([
                 '#input_durasi',
                 '#input_terapis',
@@ -265,6 +229,7 @@
             enableForm([
                 '#input_durasi'
             ])
+            $('#detail').val(data.text)
             getServiceDuration(data.id)
             getTherapis(data.id)
         })
@@ -279,6 +244,10 @@
 
         $('#input_durasi').on('select2:select', function (e) {
             data = e.params.data
+            s_text = $("#input_service option:selected").text();
+            s_id = $("#input_service option:selected").val();
+            $('#detail').val(s_text + ' x ' + data.text)
+            getPrice(s_id, data.id)
             enableForm([
                 '#input_terapis'
             ])
@@ -417,11 +386,6 @@
             }
         })
 
-        $('#input_jam_b').on('click', function(e){
-            e.preventDefault()
-            getAvailableTime(document.getElementById('input_jam'))
-        })
-
         function getAvailableTime(elm = '') {
             service = $('#input_service').val()
             duration = $('#input_durasi').val()
@@ -429,27 +393,31 @@
             date = $('#input_tanggal').val()
             time = elm.value
             url = "<?= base_url('api/getAvailableTime') ?>" + "?service_id=" + service + "&duration=" + duration + "&therapis_id=" + therapis + "&date=" + date + "&time=" + time
-            console.log(timepicker.value())
             $.ajax({
                 url: url,
                 method: 'get',
                 dataType: 'json',
                 success: function (data) {
                     if (data.therapis) {
-                        document.querySelector('#input_terapis')[0].value = data.therapis
-                        result = data.data.results
+                        document.querySelector('#input_terapis')[0].value = data.therapis[0]
+                        if (data.data) {
+                            result = data.data.results
+                        } else {
+                            result = data.results
+                        }
+                        
                     } else {
                         if (data.results) {
                             result = data.results
                         } else {
-                            result = {}
+                            result = new Object()
                         }
                     }
                     $('.suggestion').html()
                     var el = '<div class="row">'
                     for (var i = 0; i < result.length; i++) {
                         var t = result[i]
-                        el += '<div class="col-sm-3 time-box" id="tb_'+ i +'">'
+                        el += '<div class="col-sm-3 time-box mb-2" id="tb_'+ i +'" data-time="'+t.id+'">'
                         el += '<span>' + t.text + '</span>'
                         el += '</div>'
                     }
@@ -459,20 +427,15 @@
             })
         }
 
-        $('#input_jam').on('select2:open', function (e) {
-            disableForm([
-                '#input_kamar',
-                '.kamarInput',
-                '.next-btn'
-            ])
-        })
-
-        $('#input_jam').on('select2:select', function (e) {
-            data = e.params.data
+        $(document).on('click', '.time-box', function () {
             service = $('#input_service').val()
             duration = $('#input_durasi').val()
             therapis = $('#input_terapis').val()
             date = $('#input_tanggal').val()
+            time = $(this).data('time')
+            $('.time-box').removeClass('selected')
+            $(this).addClass('selected')
+            $('#input_jam').val(time)
             $.ajax({
                 url: "<?= base_url('api/getAvailableRooms'); ?>",
                 dataType: 'json',
@@ -482,10 +445,13 @@
                     duration: duration,
                     therapis_id: therapis,
                     date: date,
-                    time: data.id
+                    time: time
                 },
                 success: function (result) {
                     showAvailableRooms(result.results)
+                    enableForm([
+                        '.kamarInput'
+                    ])
                 }
             })
         })
@@ -504,37 +470,41 @@
 
         //End rooms form logic
 
-        $('.jamInput').on('click', function () {
-            var selection = $('.jamInput')
-            var value = $(this).data('value')
-            for (var i = 0; i < selection.length; i++) {
-                if ($(selection[i]).hasClass('selected')) {
-                    $(selection[i]).removeClass('selected')
-                }
-            }
-            if (!$(this).hasClass('disabled')) {
-                $(this).addClass('selected')
-                $('#input_jam').val(value)
-            }
-        })
-
-        $('.kamarInput').on('click', function () {
+        $(document).on('click', '.kamarInput', function () {
             var selection = $('.kamarInput')
             var value = $(this).data('value')
-            for (var i = 0; i < selection.length; i++) {
-                if ($(selection[i]).hasClass('selected')) {
-                    $(selection[i]).removeClass('selected')
-                }
-            }
-            if (!$(this).hasClass('disabled')) {
-                $(this).addClass('selected')
-                $('#input_kamar').removeAttr('disabled')
-                $('#input_kamar').val(value)
-            }
+            selection.removeClass('selected')
+            $(this).addClass('selected')
+            $('#input_kamar').val(value)
             enableForm([
                 '.next-btn'
             ])
         })
+
+        $(document).on('keyup', '#pay', function () {
+            $(this).formatNumber()
+            cash = $(this).cleanNumber(true)
+            total = $('#total_price').cleanNumber(true)
+            $('#change').formatNumber((cash - total).toString())
+        })
+
+        setInputFilter(document.getElementById("pay"), function(value) {
+          return /^\d*\.?\d*$/.test(value);
+        })
+
+        function getPrice(s, d) {
+            $.ajax({
+                url: "<?= base_url('api/getPrice'); ?>",
+                method: 'GET',
+                data: {
+                    service_id: s,
+                    duration: d
+                },
+                success: function (data) {
+                    $('#total_price').formatNumber(data.total)
+                }
+            })
+        }
 
         function getTotal(form) {
             $.ajax({
@@ -588,6 +558,42 @@
                     $(el).addClass('disabled')
                 }
             })
+        }
+
+        String.prototype.addComma = function() {
+          return this.replace(/(.)(?=(.{3})+$)/g,"$1,").replace(',.', '.');
+        }
+
+        $.fn.formatNumber = function (num) {
+            if (!num) {
+                return $(this).val($(this).val().replace(/(,|)/g,'').addComma())
+            } else {
+                return $(this).val(num.toString().replace(/(,|)/g,'').addComma())
+            }
+        }
+
+        $.fn.cleanNumber = function(a) {
+            if (!a) {
+                return $(this).val($(this).val().replace(/(,| )/g,''));
+            } else {
+                return $(this).val().replace(/(,| )/g,'')
+            }
+            
+        }
+
+        function setInputFilter(textbox, inputFilter) {
+          ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+            textbox.addEventListener(event, function() {
+              if (inputFilter(this.value)) {
+                this.oldValue = this.value;
+                this.oldSelectionStart = this.selectionStart;
+                this.oldSelectionEnd = this.selectionEnd;
+              } else if (this.hasOwnProperty("oldValue")) {
+                this.value = this.oldValue;
+                this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+              }
+            });
+          });
         }
     });
 </script>
